@@ -1,0 +1,132 @@
+---
+import Icon from "./Icon.astro";
+---
+
+{/*
+  Both icons are rendered and CSS swaps them, so the button is correct at first
+  paint without JS having to touch the DOM. The label is fixed up on hydration.
+*/}
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  type="button"
+  title="Switch theme"
+  aria-label="Switch to dark theme"
+>
+  <span class="ico sun"><Icon name="sun" size={18} /></span>
+  <span class="ico moon"><Icon name="moon" size={18} /></span>
+</button>
+
+<script>
+  type Theme = "light" | "dark";
+
+  const STORAGE_KEY = "theme";
+  const root = document.documentElement;
+
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+  function stored(): Theme | null {
+    try {
+      const value = localStorage.getItem(STORAGE_KEY);
+      return value === "light" || value === "dark" ? value : null;
+    } catch {
+      return null; // private mode / storage disabled
+    }
+  }
+
+  function apply(theme: Theme) {
+    root.dataset.theme = theme;
+
+    const button = document.getElementById("theme-toggle");
+    button?.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+    );
+
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", theme === "dark" ? "#14110e" : "#faf8f4");
+  }
+
+  function current(): Theme {
+    return root.dataset.theme === "dark" ? "dark" : "light";
+  }
+
+  // Delegated so this binds exactly once. Attaching to the button inside a
+  // per-navigation hook would stack a second listener on every page load and
+  // each click would toggle twice, landing back on the same theme.
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest("#theme-toggle")) return;
+
+    const next: Theme = current() === "dark" ? "light" : "dark";
+    apply(next);
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      // preference just won't persist
+    }
+  });
+
+  // Follow the OS while the visitor hasn't made an explicit choice.
+  media.addEventListener("change", (event) => {
+    if (!stored()) apply(event.matches ? "dark" : "light");
+  });
+
+  // A view-transition swap replaces <html>'s attributes, so restore the theme
+  // before the new page paints.
+  document.addEventListener("astro:after-swap", () => {
+    apply(stored() ?? (media.matches ? "dark" : "light"));
+  });
+
+  // Keep the button's label in step with the theme on every page.
+  apply(current());
+  document.addEventListener("astro:page-load", () => apply(current()));
+</script>
+
+<style>
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--body);
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      color 0.2s,
+      border-color 0.2s,
+      transform 0.2s;
+  }
+
+  .theme-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .ico {
+    grid-area: 1 / 1;
+    display: grid;
+    place-items: center;
+    transition:
+      opacity 0.25s ease,
+      transform 0.35s ease;
+  }
+
+  /* light theme shows the moon (what you'd switch to), dark shows the sun */
+  :global(:root[data-theme="dark"]) .moon,
+  :global(:root:not([data-theme="dark"])) .sun {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.6);
+  }
+
+  :global(:root[data-theme="dark"]) .sun,
+  :global(:root:not([data-theme="dark"])) .moon {
+    opacity: 1;
+    transform: none;
+  }
+</style>

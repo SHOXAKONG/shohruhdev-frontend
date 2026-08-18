@@ -1,0 +1,270 @@
+---
+import { getCollection } from "astro:content";
+import { focus, site, stats } from "../data/site";
+
+// Newest post, so the last row is live rather than a standing claim.
+const [latest] = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const meta = [
+  { label: "Currently", value: site.company },
+  { label: "Shipping", value: `${stats[0].value} years` },
+  ...(latest
+    ? [{ label: "Latest", value: latest.data.title, href: `/blog/${latest.id}` }]
+    : []),
+];
+---
+
+<section class="wrap hero">
+  <h1 class="serif">I keep the numbers <em>honest.</em></h1>
+
+  <div class="split">
+    <div class="lede">
+      <figure class="quote">
+        <blockquote>“It is not enough for code to work.”</blockquote>
+        <figcaption>— Robert C. Martin, <cite>Clean Code</cite></figcaption>
+      </figure>
+      <div class="actions">
+        <a class="btn btn-primary" href="#work">See the work</a>
+        <a class="text-link" href="/blog">Read the blog <span class="arw">→</span></a>
+      </div>
+    </div>
+
+    <dl class="meta">
+      {
+        meta.map((row) => (
+          <div class="meta-row">
+            <dt>{row.label}</dt>
+            <dd>{row.href ? <a href={row.href}>{row.value}</a> : row.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  <ol class="problems" aria-label="What usually lands on my desk">
+    {
+      focus.map((item, i) => (
+        <li>
+          <a href={item.href}>
+            <span class="n">{String(i + 1).padStart(2, "0")}</span>
+            <span class="what">{item.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .hero {
+    padding-block: 78px 84px;
+  }
+
+  h1 {
+    font-weight: 600;
+    font-size: clamp(44px, 8.2vw, 104px);
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    max-width: 15ch;
+    margin-bottom: 52px;
+  }
+
+  h1 em {
+    font-weight: 300;
+    font-style: italic;
+    color: var(--accent);
+    /* keep the phrase intact so it wraps as a unit, not "work / around." */
+    white-space: nowrap;
+  }
+
+  /* lede + spec column, divided by a hairline like a masthead */
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 64px;
+    border-top: 1px solid var(--line);
+    padding-top: 30px;
+  }
+
+  /* borrowed words, so they're set as a quote and attributed rather than
+     dropped into the first person */
+  .quote {
+    max-width: 52ch;
+    margin-bottom: 30px;
+    border-left: 2px solid var(--accent);
+    padding-left: 22px;
+  }
+
+  .quote blockquote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 25px;
+    line-height: 1.34;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .quote figcaption {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 14px;
+  }
+
+  .quote cite {
+    font-style: normal;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    flex-wrap: wrap;
+  }
+
+  .text-link {
+    font-weight: 600;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 2px;
+    border-bottom: 1.5px solid var(--line);
+    transition: 0.2s;
+  }
+
+  .text-link:hover {
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .text-link .arw {
+    color: var(--accent);
+    transition: 0.2s;
+  }
+
+  .text-link:hover .arw {
+    transform: translateX(3px);
+  }
+
+  /* spec sheet — facts as type, not as boxes */
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 18px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta-row:first-child {
+    padding-top: 0;
+  }
+
+  .meta-row dt {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .meta-row dd {
+    font-size: 15px;
+    font-weight: 500;
+    text-align: right;
+    min-width: 0;
+  }
+
+  /* a post title can run long — cap it at two lines */
+  .meta-row dd a {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    transition: 0.2s;
+  }
+
+  .meta-row dd a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* the four recurring problems, as a numbered index */
+  .problems {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 64px;
+    margin-top: 64px;
+    border-top: 1px solid var(--line);
+  }
+
+  .problems li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* the whole row is the link, so the pointer and the hit area agree */
+  .problems a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 17px 2px;
+    cursor: pointer;
+    transition: padding 0.2s ease;
+  }
+
+  .problems a:hover {
+    padding-left: 8px;
+  }
+
+  .problems a:hover .what {
+    color: var(--accent);
+  }
+
+  .problems .n {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+
+  .problems a:hover .n {
+    color: var(--accent);
+  }
+
+  .problems .what {
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      padding-block: 40px 60px;
+    }
+
+    h1 {
+      margin-bottom: 38px;
+      max-width: none;
+    }
+
+    .split {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 38px;
+    }
+
+    .problems {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: 46px;
+    }
+  }
+</style>

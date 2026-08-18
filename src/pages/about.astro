@@ -1,0 +1,431 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContactCta from "../components/ContactCta.astro";
+import { principles, process, site, skills } from "../data/site";
+
+const facts = [
+  { label: "Role", value: site.role },
+  { label: "At", value: site.company },
+  { label: "Good at", value: "Finding the real problem" },
+];
+---
+
+<BaseLayout
+  title={`About — ${site.name}`}
+  description="Shohruh Bekmurodov — software engineer. The problems he works on, and how he goes about solving them."
+>
+  <header class="wrap about-head reveal in">
+    <span class="eyebrow">About</span>
+    <h1 class="serif">
+      I build the layer<br /> nobody sees <em>until it breaks.</em>
+    </h1>
+    <dl class="facts">
+      {
+        facts.map((fact) => (
+          <div>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </header>
+
+  <div class="wrap about-body">
+    <aside class="profile reveal">
+      <div class="pcard">
+        <div class="pcard-top">
+          <div class="avatar" aria-hidden="true">{site.initials}</div>
+          <div>
+            <b>{site.name}</b>
+            <span>{site.role}</span>
+          </div>
+        </div>
+        <p class="pbio">{site.bio}</p>
+        <span class="status"><span class="sdot"></span>Available for new projects</span>
+        <div class="plinks">
+          <a class="btn btn-primary btn-sm" href={`mailto:${site.email}`}>Email me</a>
+          <a class="btn btn-ghost btn-sm" href={site.github}>GitHub</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="about-main">
+      <section class="reveal">
+        <h2 class="serif">What I work on</h2>
+        <div class="rail">
+          {
+            skills.map((skill) => (
+              <div class="rail-item">
+                <span class="rail-dot" />
+                <div>
+                  <h3>{skill.title}</h3>
+                  <p>{skill.sub}</p>
+                  <div class="rail-tags">
+                    {skill.items.map((item) => (
+                      <span>{item}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="reveal">
+        <h2 class="serif">How I work</h2>
+        <div class="principles">
+          {
+            principles.map((principle, i) => (
+              <article class="principle">
+                <span class="pnum serif">{String(i + 1).padStart(2, "0")}</span>
+                <h3 class="serif">{principle.title}</h3>
+                <p>{principle.body}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section id="process" class="reveal">
+        <h2 class="serif">How a problem goes</h2>
+        <div class="tools">
+          {
+            process.map((phase, i) => (
+              <div class:list={["tool-row", `tone-${phase.tone}`]}>
+                <span class="tool-group">
+                  <span class="step-num">{String(i + 1).padStart(2, "0")}</span>
+                  {phase.step}
+                </span>
+                <p class="tool-body">{phase.body}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <ContactCta />
+</BaseLayout>
+
+<style>
+  /* ---- header --------------------------------------------------- */
+  .about-head {
+    padding-block: 68px 44px;
+  }
+
+  .about-head .eyebrow {
+    color: var(--accent);
+  }
+
+  .about-head h1 {
+    font-size: clamp(38px, 5vw, 62px);
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    margin: 16px 0 36px;
+    max-width: 16ch;
+  }
+
+  .about-head h1 em {
+    font-weight: 300;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+  }
+
+  .facts dt {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .facts dd {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  /* ---- two column body ------------------------------------------ */
+  .about-body {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 60px;
+    align-items: start;
+    padding-block: 20px 40px;
+  }
+
+  .profile {
+    position: sticky;
+    top: 100px;
+  }
+
+  .pcard {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 26px;
+  }
+
+  .pcard-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .pcard-top b {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 17px;
+    display: block;
+  }
+
+  .pcard-top span {
+    font-size: 13.5px;
+    color: var(--body);
+  }
+
+  .pbio {
+    font-size: 14.5px;
+    color: var(--body);
+    line-height: 1.6;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-tint);
+    border-radius: var(--r-sm);
+    padding: 7px 14px;
+    margin: 18px 0;
+  }
+
+  .sdot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(47, 191, 155, 0.16);
+  }
+
+  .plinks {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    padding: 11px 18px;
+    font-size: 14px;
+  }
+
+  /* ---- sections -------------------------------------------------- */
+  .about-main section + section {
+    margin-top: 56px;
+  }
+
+  .about-main h2 {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 26px;
+  }
+
+  /* what I work on — vertical rail */
+  .rail {
+    position: relative;
+    padding-left: 26px;
+  }
+
+  .rail::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--accent),
+      var(--accent) 50%,
+      var(--accent)
+    );
+    border-radius: var(--r-sm);
+    opacity: 0.35;
+  }
+
+  .rail-item {
+    position: relative;
+    padding-bottom: 30px;
+  }
+
+  .rail-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .rail-dot {
+    position: absolute;
+    left: -26px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+  }
+
+  .rail-item:nth-child(2) .rail-dot {
+    border-color: var(--accent);
+  }
+
+  .rail-item:nth-child(3) .rail-dot {
+    border-color: var(--accent);
+  }
+
+  .rail-item h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .rail-item p {
+    color: var(--body);
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .rail-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .rail-tags span {
+    font-size: 12.5px;
+    color: var(--body);
+    background: var(--paper-2);
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+
+  /* how I work — numbered cards */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .principle {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 24px 24px 26px;
+    transition: 0.25s;
+  }
+
+  .principle:hover {
+  }
+
+  .pnum {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-tint);
+    border-radius: 8px;
+    padding: 3px 9px;
+  }
+
+  .principle h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 14px 0 8px;
+  }
+
+  .principle p {
+    color: var(--body);
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+
+  /* toolbox — label + chips rows */
+  .tools {
+    border-top: 1px solid var(--line);
+  }
+
+  .tool-row {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 24px;
+    align-items: baseline;
+    padding: 20px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tool-group {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tone-fg);
+  }
+
+  .step-num {
+    background: var(--tone-bg);
+    border-radius: 6px;
+    padding: 3px 7px;
+    letter-spacing: 0.06em;
+  }
+
+  .tool-body {
+    font-size: 15px;
+    color: var(--body);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 900px) {
+    .about-body {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 36px;
+    }
+
+    .profile {
+      position: static;
+    }
+
+    .facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .principles {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .tool-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+  }
+</style>

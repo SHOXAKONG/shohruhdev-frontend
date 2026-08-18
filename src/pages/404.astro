@@ -1,0 +1,187 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../data/site";
+
+const links = [
+  { label: "Home", href: "/", note: "Start from the top" },
+  { label: "Work", href: "/projects", note: "Problems and what fixed them" },
+  { label: "Blog", href: "/blog", note: "Notes from the pipeline" },
+  { label: "About", href: "/about", note: "How I work" },
+];
+---
+
+<BaseLayout
+  title={`Page not found — ${site.name}`}
+  description="That page doesn't exist."
+>
+  <section class="wrap notfound">
+    <span class="eyebrow">Error 404</span>
+    <h1 class="serif">This pipeline<br /> has a <em>broken link.</em></h1>
+    <p class="lead">
+      The page you asked for isn't here — moved, renamed, or it never existed. The rest
+      of the site is fine.
+    </p>
+
+    <div class="pipe" role="img" aria-label="Request received and routed, then not found">
+      <span class="pnode ok">Request</span>
+      <span class="arw">→</span>
+      <span class="pnode ok">Route</span>
+      <span class="arw broken">→</span>
+      <span class="pnode fail">404</span>
+    </div>
+
+    <nav class="routes" aria-label="Suggested pages">
+      {
+        links.map((link) => (
+          <a class="route" href={link.href}>
+            <span class="r-label">{link.label}</span>
+            <span class="r-note">{link.note}</span>
+            <span class="arw">→</span>
+          </a>
+        ))
+      }
+    </nav>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: 90px 110px;
+    max-width: 720px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    color: var(--accent);
+  }
+
+  h1 {
+    font-size: clamp(38px, 5.4vw, 62px);
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    margin: 16px 0 20px;
+  }
+
+  h1 em {
+    font-weight: 300;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .lead {
+    color: var(--body);
+    font-size: 17.5px;
+    max-width: 46ch;
+    margin: 0 auto 40px;
+  }
+
+  /* the hero card's ETL strip, with the last stage failed */
+  .pipe {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    padding: 12px 18px;
+    margin-bottom: 48px;
+  }
+
+  .pnode {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: var(--r-sm);
+  }
+
+  .pnode.ok {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+
+  .pnode.fail {
+    background: var(--accent-tint);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+
+  .arw {
+    color: var(--muted);
+  }
+
+  .arw.broken {
+    color: var(--accent);
+    animation: flicker 2.4s ease-in-out infinite;
+  }
+
+  @keyframes flicker {
+    0%,
+    45%,
+    55%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  .routes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    text-align: left;
+  }
+
+  .route {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 4px 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    padding: 16px 18px;
+    transition: 0.2s;
+  }
+
+  .route:hover {
+    border-color: var(--accent);
+  }
+
+  .r-label {
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .r-note {
+    grid-column: 1;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .route .arw {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    color: var(--accent);
+    transition: 0.2s;
+  }
+
+  .route:hover .arw {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 560px) {
+    .routes {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .notfound {
+      padding-block: 56px 72px;
+    }
+  }
+</style>

@@ -1,0 +1,138 @@
+---
+import type { Project } from "../data/site";
+
+interface Props {
+  project: Project;
+  index?: number;
+}
+
+const { project, index = 0 } = Astro.props;
+const number = String(index + 1).padStart(2, "0");
+---
+
+<article class="card reveal">
+  <header class="head">
+    <span class="num">{number}</span>
+    <span class="cat">{project.category}</span>
+  </header>
+
+  <h3>{project.title}</h3>
+  <p class="outcome">{project.outcome}</p>
+
+  <dl class="detail">
+    <dt>Problem</dt>
+    <dd>{project.problem}</dd>
+    <dt>Change</dt>
+    <dd>{project.approach}</dd>
+  </dl>
+
+  {
+    project.href && (
+      <a class="card-link" href={project.href}>
+        View project <span class="arw">→</span>
+      </a>
+    )
+  }
+</article>
+
+<style>
+  /* flat bordered block — the structure comes from rules and type,
+     not from a coloured panel */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 26px 26px 28px;
+    display: flex;
+    flex-direction: column;
+    transition:
+      border-color 0.18s ease,
+      background 0.18s ease;
+  }
+
+  .card:hover {
+    border-color: var(--ink);
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 18px;
+  }
+
+  .num,
+  .cat {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .num {
+    color: var(--accent);
+  }
+
+  .cat {
+    color: var(--muted);
+  }
+
+  h3 {
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .outcome {
+    font-size: 15px;
+    color: var(--accent);
+    margin: 6px 0 20px;
+  }
+
+  .detail {
+    display: grid;
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 6px 16px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+
+  .detail dt {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 3px;
+  }
+
+  .detail dd {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+
+  .card-link {
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  @media (max-width: 560px) {
+    .detail {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
+
+    .detail dd {
+      margin-bottom: 10px;
+    }
+  }
+</style>

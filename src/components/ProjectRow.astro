@@ -1,0 +1,210 @@
+---
+import type { Project } from "../data/site";
+
+interface Props {
+  project: Project;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+const number = String(index + 1).padStart(2, "0");
+
+const blocks = [
+  { label: "The problem", text: project.problem },
+  { label: "What I changed", text: project.approach },
+  { label: "What it bought", text: project.result },
+];
+---
+
+<article id={project.slug} class:list={["row", `tone-${project.tone}`, "reveal"]}>
+  <span class="rail" aria-hidden="true"></span>
+  <span class="idx serif" aria-hidden="true">{number}</span>
+
+  <div class="main">
+    <span class="kicker eyebrow">{project.category}</span>
+    <h2 class="serif">{project.title}</h2>
+
+    <div class="blocks">
+      {
+        blocks.map((block) => (
+          <div class="block">
+            <span class="tag">{block.label}</span>
+            <p>{block.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="side">
+    <span class="outcome">{project.outcome}</span>
+    {
+      project.href && (
+        <a class="go" href={project.href}>
+          <span class="arw">→</span>
+          <span class="sr-only">View {project.title}</span>
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr) 190px;
+    gap: 28px;
+    align-items: start;
+    padding: 38px 32px;
+    border-radius: var(--r-md);
+    border-bottom: 1px solid var(--line);
+    /* clear the sticky header when linked to from the hero index */
+    scroll-margin-top: 110px;
+    transition:
+      background 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .row:hover {
+    background: var(--surface);
+    border-bottom-color: transparent;
+  }
+
+  /* gradient bar that grows out of the left edge on hover */
+  .rail {
+    position: absolute;
+    left: 0;
+    top: 24px;
+    bottom: 24px;
+    width: 4px;
+    border-radius: var(--r-sm);
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: center;
+    opacity: 0;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  .row:hover .rail {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+
+  .idx {
+    font-size: 46px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--muted);
+    opacity: 0.5;
+    transition:
+      color 0.25s ease,
+      opacity 0.25s ease;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .row:hover .idx {
+    color: var(--tone-fg);
+    opacity: 1;
+  }
+
+  .kicker {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  h2 {
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1.15;
+    margin: 10px 0 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 64ch;
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tone-fg);
+    margin-bottom: 6px;
+  }
+
+  .block p {
+    color: var(--body);
+    font-size: 15.5px;
+    line-height: 1.62;
+  }
+
+  .side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+    padding-top: 2px;
+    text-align: right;
+  }
+
+  .outcome {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.25;
+    color: var(--tone-fg);
+    background: var(--tone-bg);
+    border-radius: var(--r-sm);
+    padding: 10px 14px;
+  }
+
+  .go {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1.5px solid var(--line);
+    color: var(--tone-fg);
+    font-size: 17px;
+    transition: 0.2s;
+  }
+
+  .go:hover {
+    background: var(--tone-bg);
+    border-color: transparent;
+    transform: translate(3px, -3px);
+  }
+
+  @media (max-width: 860px) {
+    .row {
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 18px;
+      padding: 30px 18px;
+    }
+
+    .idx {
+      font-size: 30px;
+    }
+
+    .side {
+      grid-column: 2;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      text-align: left;
+      margin-top: 20px;
+    }
+  }
+</style>

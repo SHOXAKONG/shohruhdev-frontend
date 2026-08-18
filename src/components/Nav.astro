@@ -1,0 +1,162 @@
+---
+import { getCollection } from "astro:content";
+import Logo from "./Logo.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import { navItems } from "../data/site";
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+
+// The "Article" tab jumps straight to the featured post (newest, if none is
+// flagged), so there's no hardcoded slug to go stale when posts change.
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const highlight = posts.find((post) => post.data.featured) ?? posts[0];
+
+const tabs = [
+  ...navItems,
+  ...(highlight ? [{ label: "Article", href: `/blog/${highlight.id}` }] : []),
+];
+
+// On a post page the "Article" tab owns the active state, not "Blog".
+const onPost = path.startsWith("/blog/");
+const isActive = (href: string) => {
+  if (onPost) return href.startsWith("/blog/");
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(`${href}/`);
+};
+---
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <Logo />
+    <nav class="tabs" aria-label="Primary">
+      {
+        tabs.map((item) => (
+          <a
+            class:list={["tab", { active: isActive(item.href) }]}
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="nav-end">
+      <ThemeToggle />
+      <a class="nav-cta" href="/#contact">Get in touch</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  // When the tab strip scrolls (narrow screens), keep the current page's tab
+  // in view instead of hidden off the right edge.
+  function centerActiveTab() {
+    const strip = document.querySelector<HTMLElement>(".tabs");
+    const active = strip?.querySelector<HTMLElement>(".tab.active");
+    if (!strip || !active || strip.scrollWidth <= strip.clientWidth) return;
+
+    // offsetLeft would be relative to the sticky header, so measure with rects.
+    const stripBox = strip.getBoundingClientRect();
+    const tabBox = active.getBoundingClientRect();
+    strip.scrollLeft +=
+      tabBox.left - stripBox.left - (strip.clientWidth - tabBox.width) / 2;
+  }
+
+  centerActiveTab();
+  document.addEventListener("astro:page-load", centerActiveTab);
+</script>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 76px;
+    gap: 20px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 2px;
+  }
+
+  .tab {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--body);
+    padding: 8px 14px;
+    border-bottom: 2px solid transparent;
+    transition: 0.18s ease;
+    white-space: nowrap;
+  }
+
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab:not(.active):hover {
+    color: var(--ink);
+  }
+
+  .nav-end {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-cta {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 11px 18px;
+    border-radius: var(--r-sm);
+    transition: 0.18s ease;
+  }
+
+  .nav-cta:hover {
+    background: var(--accent);
+  }
+
+  @media (max-width: 860px) {
+    .tabs {
+      order: 3;
+    }
+
+    .nav-inner {
+      height: auto;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      padding-bottom: 14px;
+    }
+  }
+
+  /* too many tabs for a phone: scroll the strip instead of clipping it */
+  @media (max-width: 720px) {
+    .tabs {
+      max-width: 100%;
+      overflow-x: auto;
+      justify-content: flex-start;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      overscroll-behavior-x: contain;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { title, tag, tone, readingTime } = post.data;
+---
+
+<a class="mini reveal" href={`/blog/${post.id}`}>
+  <div class="meta">
+    <span class:list={["tagchip", `tone-${tone}`]}>{tag}</span> · {readingTime} min read
+  </div>
+  <h3 class="serif">{title}</h3>
+  <span class="read">Read post →</span>
+</a>
+
+<style>
+  .mini {
+    border-radius: var(--r-md);
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    transition: 0.25s;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 220px;
+  }
+
+  .mini:hover {
+    border-color: var(--ink);
+  }
+
+  .meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .read {
+    margin-top: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+</style>

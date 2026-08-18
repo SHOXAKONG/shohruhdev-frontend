@@ -1,0 +1,150 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FeaturedPost from "../../components/FeaturedPost.astro";
+import PostCard from "../../components/PostCard.astro";
+import { blogCategories, site } from "../../data/site";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const featured = posts.find((post) => post.data.featured);
+const rest = posts.filter((post) => post !== featured);
+
+const filters = ["All", ...blogCategories];
+---
+
+<BaseLayout
+  title={`Blog — ${site.name}`}
+  description="Notes from the pipeline: ETL patterns, Postgres tuning, backend auth, and the occasional Go side-project."
+>
+  <section class="wrap page-head reveal in">
+    <span class="eyebrow">Writing &amp; notes</span>
+    <h1 class="serif">Notes from the pipeline</h1>
+    <p>
+      Things I learn while building data infrastructure — ETL patterns, Postgres tuning,
+      backend auth, and the occasional Go side-project.
+    </p>
+    <div class="filters" role="group" aria-label="Filter posts by topic">
+      {
+        filters.map((filter) => (
+          <button
+            class:list={["filt", { on: filter === "All" }]}
+            type="button"
+            data-filter={filter}
+            aria-pressed={filter === "All" ? "true" : "false"}
+          >
+            {filter}
+          </button>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap">
+    {featured && <FeaturedPost post={featured} />}
+
+    <div class="blog-grid" id="blog-grid">
+      {rest.map((post) => <PostCard post={post} />)}
+    </div>
+    <p class="empty" id="blog-empty" hidden>No posts in this topic yet.</p>
+  </section>
+  <div style="height:64px"></div>
+</BaseLayout>
+
+<script>
+  // Topic filter. Cards carry `data-category`; "All" clears the filter.
+  function initFilters() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".filt");
+    const grid = document.getElementById("blog-grid");
+    const empty = document.getElementById("blog-empty");
+    if (!buttons.length || !grid) return;
+
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>("[data-category]"));
+
+    for (const button of buttons) {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter ?? "All";
+
+        for (const other of buttons) {
+          const on = other === button;
+          other.classList.toggle("on", on);
+          other.setAttribute("aria-pressed", String(on));
+        }
+
+        let shown = 0;
+        for (const card of cards) {
+          const match = filter === "All" || card.dataset.category === filter;
+          card.hidden = !match;
+          if (match) shown++;
+        }
+
+        if (empty) empty.hidden = shown > 0;
+      });
+    }
+  }
+
+  initFilters();
+  document.addEventListener("astro:page-load", initFilters);
+</script>
+
+<style>
+  .filters {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 36px 0 8px;
+  }
+
+  .filt {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--body);
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: inherit;
+  }
+
+  .filt.on,
+  .filt:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 16px 0 24px;
+  }
+
+  @media (max-width: 960px) {
+    .blog-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* cards are flex containers, so [hidden] needs help winning */
+  .blog-grid :global([hidden]) {
+    display: none;
+  }
+
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px 0 8px;
+  }
+</style>

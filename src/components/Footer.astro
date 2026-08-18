@@ -1,0 +1,99 @@
+---
+import Logo from "./Logo.astro";
+import { footerColumns, site } from "../data/site";
+
+const year = new Date().getFullYear();
+
+// Drop placeholder links rather than rendering something that goes nowhere.
+const columns = footerColumns.map((col) => ({
+  ...col,
+  links: col.links.filter((link) => link.href && link.href !== "#"),
+}));
+---
+
+<footer class="wrap footer">
+  <div class="foot-top">
+    <div class="foot-bio">
+      <Logo />
+      <p>{site.bio}</p>
+    </div>
+    <div class="foot-cols">
+      {
+        columns.map((col) => (
+          <div class="foot-col">
+            <h4>{col.heading}</h4>
+            {col.links.map((link) => (
+              <a href={link.href}>{link.label}</a>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© {year} {site.name}</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-block: 56px 40px;
+  }
+
+  .foot-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .foot-bio {
+    max-width: 320px;
+  }
+
+  .foot-bio p {
+    color: var(--body);
+    font-size: 14px;
+    margin-top: 14px;
+  }
+
+  .foot-cols {
+    display: flex;
+    gap: 64px;
+    flex-wrap: wrap;
+  }
+
+  .foot-col h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .foot-col a {
+    display: block;
+    color: var(--body);
+    font-size: 14px;
+    margin-bottom: 11px;
+    transition: 0.2s;
+  }
+
+  .foot-col a:hover {
+    color: var(--accent);
+  }
+
+  .foot-bottom {
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>

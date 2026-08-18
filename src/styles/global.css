@@ -1,0 +1,402 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Design tokens
+   --------------------------------------------------------------- */
+/* Shape, type and other theme-independent values. */
+:root {
+  /* Text on surfaces that are light in BOTH themes — the white button on the
+     contact gradient. --ink flips with the theme and would vanish there. */
+  --on-light: #16150f;
+
+  --r-lg: 4px;
+  --r-md: 3px;
+  --r-sm: 2px;
+  --maxw: 1240px;
+  /* --font-serif is the display role; components already reference it */
+  --font-serif: "Archivo", system-ui, sans-serif;
+  --font-sans: "Archivo", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/*
+ * Colour comes in two sets. `data-theme` is written to <html> before first
+ * paint by the inline script in BaseLayout, from a stored choice or the OS
+ * setting; the media query below is the no-JS fallback.
+ */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --paper: #fbfaf7;
+  --paper-2: #f2f0ea;
+  --surface: #ffffff;
+  --ink: #16150f;
+  --body: #55534a;
+  --muted: #8b887e;
+  --line: #dedbd2;
+
+  /* one accent, used for signal only — never as decoration */
+  --accent: #d43c14;
+  --accent-strong: #b93110;
+  --accent-tint: #f7e9e3;
+
+  --nav-bg: rgba(251, 250, 247, 0.86);
+
+  --slab: #16150f;
+  --slab-fg: #faf9f6;
+  --slab-line: rgba(255, 255, 255, 0.2);
+
+  --shadow-sm: none;
+  --shadow-md: none;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #0f0f0d;
+  --paper-2: #171714;
+  --surface: #141412;
+  --ink: #f2f0e8;
+  --body: #a5a299;
+  --muted: #75726a;
+  --line: #2a2924;
+
+  --accent: #ff5a2b;
+  --accent-strong: #ff764f;
+  --accent-tint: #2a1610;
+
+  --nav-bg: rgba(15, 15, 13, 0.8);
+
+  /* lifted off the page ground so the block still reads as a block */
+  --slab: #1e1e19;
+  --slab-fg: #f2f0e8;
+  --slab-line: rgba(255, 255, 255, 0.16);
+
+  --shadow-sm: none;
+  --shadow-md: none;
+}
+
+/*
+ * No-JS fallback: with scripting off nothing writes `data-theme`, so follow
+ * the OS here instead. Values must match the block above — the toggle path
+ * is the one that matters, this only catches the scriptless case.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --paper: #0f0f0d;
+    --paper-2: #171714;
+    --surface: #141412;
+    --ink: #f2f0e8;
+    --body: #a5a299;
+    --muted: #75726a;
+    --line: #2a2924;
+
+    --accent: #ff5a2b;
+    --accent-strong: #ff764f;
+    --accent-tint: #2a1610;
+
+    --nav-bg: rgba(15, 15, 13, 0.8);
+
+    /* lifted off the page ground so the block still reads as a block */
+    --slab: #1e1e19;
+    --slab-fg: #f2f0e8;
+    --slab-line: rgba(255, 255, 255, 0.16);
+
+    --shadow-sm: none;
+    --shadow-md: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(60% 50% at 82% 8%, var(--glow-violet), transparent 70%),
+    radial-gradient(50% 45% at 5% 20%, var(--glow-coral), transparent 70%);
+  background-attachment: fixed;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------------
+   Shared primitives
+   --------------------------------------------------------------- */
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+@media (max-width: 600px) {
+  .wrap {
+    padding: 0 22px;
+  }
+}
+
+.serif {
+  font-family: var(--font-serif);
+}
+
+/* visible to screen readers only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  background: var(--ink);
+}
+
+/* buttons -------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  padding: 13px 22px;
+  border-radius: var(--r-sm);
+  transition: 0.18s ease;
+}
+
+/* --paper reads as near-white on the light theme and near-black on the dark
+   one, so it stays legible on --primary and --ink in both. */
+.btn-primary {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+.btn-primary:hover {
+  background: var(--accent-strong);
+}
+
+.btn-ghost {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-ghost .arw {
+  color: var(--accent);
+}
+
+.btn-white {
+  background: var(--slab-fg);
+  color: var(--on-light);
+}
+
+.btn-white:hover {
+  background: var(--paper-2);
+}
+
+.btn-outline-w {
+  border: 1.5px solid var(--slab-line);
+  color: var(--slab-fg);
+}
+
+.btn-outline-w:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* chips & tags --------------------------------------------------- */
+.chip {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--body);
+}
+
+.tagchip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--muted);
+}
+
+/* Tone classes are kept so components can stay generic, but they no longer
+   carry a palette — the design uses one accent, not six. */
+.tone-violet,
+.tone-coral,
+.tone-mint,
+.tone-sky,
+.tone-amber,
+.tone-aqua {
+  --tone-bg: transparent;
+  --tone-fg: var(--accent);
+}
+
+/* section scaffolding ------------------------------------------- */
+/* padding-block only — these classes are combined with .wrap, whose
+   horizontal padding is the mobile gutter and must survive. */
+.section {
+  padding-block: 72px;
+}
+
+.band {
+  background: var(--paper-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 44px;
+}
+
+.section-head .eyebrow {
+  color: var(--accent);
+}
+
+.section-head h2 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(30px, 3.4vw, 42px);
+  line-height: 1.06;
+  margin-top: 12px;
+  letter-spacing: -0.01em;
+}
+
+.link-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  padding-bottom: 6px;
+}
+
+.link-more .arw {
+  color: var(--accent);
+  transition: 0.2s;
+}
+
+.link-more:hover .arw {
+  transform: translateX(4px);
+}
+
+/* page head (blog listing) -------------------------------------- */
+.page-head {
+  padding-block: 64px 40px;
+  text-align: center;
+}
+
+.page-head .eyebrow {
+  color: var(--accent);
+}
+
+.page-head h1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(40px, 5vw, 60px);
+  letter-spacing: -0.01em;
+  margin: 14px 0 16px;
+}
+
+.page-head p {
+  color: var(--body);
+  font-size: 18px;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* ---------------------------------------------------------------
+   Scroll reveal
+   --------------------------------------------------------------- */
+/* Only hide reveal targets when JS is there to bring them back — the
+   `reveal-js` class is set by an inline script in BaseLayout's head. */
+.reveal-js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal-js .reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .reveal-js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

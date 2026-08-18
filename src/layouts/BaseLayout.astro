@@ -1,0 +1,111 @@
+---
+import { ClientRouter, fade } from "astro:transitions";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/site";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${site.name} — ${site.role}`,
+  description = site.bio,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonical} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <ClientRouter />
+
+    <meta name="theme-color" content="#faf8f4" />
+
+    <script is:inline>
+      // Runs before first paint: a stored choice wins, otherwise follow the OS.
+      // Setting the attribute here is what prevents a flash of the wrong theme.
+      (() => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem("theme");
+        } catch {
+          // storage blocked — fall through to the OS setting
+        }
+
+        const dark =
+          saved === "dark" ||
+          (saved !== "light" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+
+        // Opt into the reveal-on-scroll animation only when we can undo it.
+        // Without this, a JS failure would leave the page blank.
+        if ("IntersectionObserver" in window) {
+          document.documentElement.classList.add("reveal-js");
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <Nav />
+    <main transition:animate={fade({ duration: "0.35s" })}>
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // Reveal-on-scroll. Elements marked `.reveal` fade up once they enter the
+      // viewport; `.reveal.in` is the settled state (see global.css).
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in");
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.12 },
+      );
+
+      function watchReveals() {
+        document
+          .querySelectorAll<HTMLElement>(".reveal:not(.in)")
+          .forEach((el) => observer.observe(el));
+      }
+
+      watchReveals();
+      document.addEventListener("astro:page-load", watchReveals);
+
+      // A view-transition swap replaces <html>'s attributes, so re-arm the
+      // opt-in class before the new page paints.
+      document.addEventListener("astro:after-swap", () => {
+        document.documentElement.classList.add("reveal-js");
+      });
+    </script>
+  </body>
+</html>

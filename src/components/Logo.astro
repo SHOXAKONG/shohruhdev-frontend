@@ -1,0 +1,49 @@
+---
+import { site } from "../data/site";
+
+interface Props {
+  href?: string;
+}
+
+const { href = "/" } = Astro.props;
+---
+
+{/*
+  Mark only — the serif SB monogram carries the identity on its own. The link
+  still has an accessible name for screen readers and the tab order.
+*/}
+<a class="logo" href={href} aria-label={`${site.name} — home`}>
+  <span class="mark" aria-hidden="true">{site.initials}</span>
+</a>
+
+<style>
+  /* inline-flex so the link hugs the mark instead of stretching across its
+     container (the footer column is 320px wide). */
+  .logo {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .mark {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-sm);
+    display: grid;
+    place-items: center;
+    color: var(--paper);
+    background: var(--ink);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    /* the serif pair sits slightly high in the box on its own */
+    padding-right: 0.04em;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .logo:hover .mark {
+    background: var(--accent);
+  }
+</style>

@@ -1,0 +1,102 @@
+---
+import Icon from "./Icon.astro";
+import type { Skill } from "../data/site";
+
+interface Props {
+  skill: Skill;
+}
+
+const { skill } = Astro.props;
+---
+
+<div class:list={["skill", skill.variant, "reveal"]}>
+  <div class="ico">
+    <Icon name={skill.icon} size={22} />
+  </div>
+  <h3 class="serif">{skill.title}</h3>
+  <p class="sub">{skill.sub}</p>
+  <ul>
+    {skill.items.map((item) => <li>{item}</li>)}
+  </ul>
+</div>
+
+<style>
+  .skill {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 30px 28px;
+  }
+
+  .ico {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 18px;
+  }
+
+  .skill.data .ico {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+
+  .skill.backend .ico {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+
+  .skill.infra .ico {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .sub {
+    font-size: 14px;
+    color: var(--body);
+    margin-bottom: 18px;
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  li {
+    font-size: 14px;
+    color: var(--body);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  li::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex: none;
+  }
+
+  .skill.data li::before {
+    background: var(--accent);
+  }
+
+  .skill.backend li::before {
+    background: var(--accent);
+  }
+
+  .skill.infra li::before {
+    background: var(--accent);
+  }
+</style>
