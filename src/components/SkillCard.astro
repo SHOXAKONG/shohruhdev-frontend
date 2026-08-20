@@ -1,27 +1,29 @@
 ---
-import Icon from "./Icon.astro";
 import type { Skill } from "../data/site";
 
 interface Props {
   skill: Skill;
+  index: number;
 }
 
-const { skill } = Astro.props;
+const { skill, index } = Astro.props;
 ---
 
-<div class="reveal rounded-md border border-line bg-surface p-[30px] px-7">
-  <div class="mb-[18px] grid size-[46px] place-items-center rounded-[13px] bg-accent-tint text-accent">
-    <Icon name={skill.icon} size={22} />
+<div class="reveal group grid grid-cols-[64px_minmax(0,1fr)] items-start gap-6 border-b border-line py-9 first:pt-0 last:border-b-0 max-[640px]:grid-cols-[40px_minmax(0,1fr)] max-[640px]:gap-4 max-[640px]:py-7">
+  <span class="font-serif text-4xl leading-none font-semibold text-muted/60 transition-colors duration-300 group-hover:text-accent max-[640px]:text-2xl">
+    {String(index + 1).padStart(2, "0")}
+  </span>
+  <div>
+    <h3 class="mb-2 font-serif text-2xl font-semibold">{skill.title}</h3>
+    <p class="mb-4 max-w-[52ch] text-[15px] text-body">{skill.sub}</p>
+    <ul class="flex flex-wrap gap-x-6 gap-y-2">
+      {
+        skill.items.map((item) => (
+          <li class="flex items-center gap-2 text-[13.5px] text-body before:size-1 before:flex-none before:rounded-full before:bg-accent">
+            {item}
+          </li>
+        ))
+      }
+    </ul>
   </div>
-  <h3 class="mb-2 font-serif text-xl font-semibold">{skill.title}</h3>
-  <p class="mb-[18px] text-sm text-body">{skill.sub}</p>
-  <ul class="flex flex-col gap-[9px]">
-    {
-      skill.items.map((item) => (
-        <li class="flex items-center gap-2.5 text-sm text-body before:size-1.5 before:flex-none before:rounded-full before:bg-accent">
-          {item}
-        </li>
-      ))
-    }
-  </ul>
 </div>

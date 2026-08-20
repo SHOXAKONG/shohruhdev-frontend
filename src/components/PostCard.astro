@@ -11,19 +11,21 @@ const { title, description, tag, pubDate, readingTime, category } = post.data;
 ---
 
 <a
-  class="group reveal flex flex-col border-t-2 border-ink pt-[18px] pb-6 transition-colors duration-[180ms] ease-out hover:border-accent"
+  class="group reveal flex flex-col gap-3 border-b border-line py-8 first:pt-0 last:border-b-0 min-[720px]:flex-row min-[720px]:items-baseline min-[720px]:gap-8"
   href={`/blog/${post.id}`}
   data-category={category}
 >
-  <div class="mb-4 flex items-baseline justify-between gap-3 font-mono text-[10.5px] tracking-[0.12em] uppercase">
+  <div class="flex shrink-0 items-center gap-3 font-mono text-[11px] tracking-[0.12em] uppercase min-[720px]:w-[170px] min-[720px]:flex-col min-[720px]:items-start min-[720px]:gap-1.5">
     <span class="text-accent">{tag}</span>
     <span class="text-muted">{formatDate(pubDate)}</span>
   </div>
-  <h3 class="mb-2.5 text-xl leading-[1.2] font-bold tracking-[-0.02em] transition-colors duration-[180ms] ease-out group-hover:text-accent">
-    {title}
-  </h3>
-  <p class="mb-[18px] text-[14.5px] leading-[1.55] text-body">{description}</p>
-  <span class="mt-auto font-mono text-[10.5px] tracking-[0.12em] text-muted uppercase">
-    {readingTime} min read
+  <div class="min-w-0 flex-1">
+    <h3 class="mb-1.5 font-serif text-2xl font-semibold transition-colors duration-200 group-hover:text-accent">
+      {title}
+    </h3>
+    <p class="max-w-[60ch] text-[15px] text-body">{description}</p>
+  </div>
+  <span class="shrink-0 font-mono text-[11px] tracking-[0.12em] text-muted uppercase min-[720px]:self-start">
+    {readingTime} min
   </span>
 </a>

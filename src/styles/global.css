@@ -9,7 +9,7 @@
    Tailwind theme — values that don't change with the theme
    --------------------------------------------------------------- */
 @theme {
-  --font-serif: "Archivo", system-ui, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
   --font-sans: "Archivo", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
