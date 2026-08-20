@@ -17,77 +17,38 @@ const posts = (await getCollection("blog"))
 <BaseLayout>
   <Hero />
 
-  <section id="work" class="wrap section">
+  <section id="work" class="wrap py-[72px]">
     <SectionHead
       eyebrow="Selected work"
       title="Things I've built"
       linkLabel="View all projects"
       linkHref="/projects"
     />
-    <div class="work-grid">
+    <div class="grid grid-cols-2 gap-6 max-[720px]:grid-cols-1">
       {projects.map((project, i) => <ProjectCard project={project} index={i} />)}
     </div>
   </section>
 
-  <section class="band">
-    <div class="wrap section">
+  <section class="border-y border-line bg-paper-2">
+    <div class="wrap py-[72px]">
       <SectionHead eyebrow="What I do" title="Three things, done well" />
-      <div class="skill-grid">
+      <div class="mt-11 grid grid-cols-3 gap-[22px] max-[820px]:grid-cols-1">
         {skills.map((skill) => <SkillCard skill={skill} />)}
       </div>
     </div>
   </section>
 
-  <section class="wrap section">
+  <section class="wrap py-[72px]">
     <SectionHead
       eyebrow="Writing"
       title="From the blog"
       linkLabel="All posts"
       linkHref="/blog"
     />
-    <div class="mini-grid">
+    <div class="grid grid-cols-3 gap-[22px] max-[820px]:grid-cols-1">
       {posts.map((post) => <MiniPost post={post} />)}
     </div>
   </section>
 
   <ContactCta />
 </BaseLayout>
-
-<style>
-  .work-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  @media (max-width: 720px) {
-    .work-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .skill-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
-    margin-top: 44px;
-  }
-
-  @media (max-width: 820px) {
-    .skill-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .mini-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
-  }
-
-  @media (max-width: 820px) {
-    .mini-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>

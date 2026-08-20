@@ -15,138 +15,47 @@ const indexStats = [
   title={`Work — ${site.name}`}
   description="Four problems Shohruh Bekmurodov was handed, what was actually wrong with each, and what changed."
 >
-  <header class="wrap work-head reveal in">
-    <div class="head-l">
-      <span class="eyebrow">Selected work</span>
-      <h1 class="serif">What was broken,<br /> and what I changed.</h1>
-      <p class="lead">
+  <header class="reveal in wrap grid grid-cols-[minmax(0,1.5fr)_minmax(0,0.75fr)] items-end gap-14 pt-[68px] pb-[52px] max-[900px]:grid-cols-[minmax(0,1fr)] max-[900px]:gap-[34px] max-[900px]:pt-11 max-[900px]:pb-9">
+    <div>
+      <span class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+        Selected work
+      </span>
+      <h1 class="my-4 font-serif text-[clamp(36px,4.6vw,58px)] leading-[1.04] font-semibold tracking-[-0.015em]">
+        What was broken,<br /> and what I changed.
+      </h1>
+      <p class="max-w-[52ch] text-[17.5px] text-body">
         {projects.length} problems I was handed and the systems that came out of them.
         Each one is written the way it happened: what people were working around, what I
         changed about it, and what that bought them.
       </p>
     </div>
-    <aside class="index-card">
-      <span class="ic-label">INDEX</span>
-      <dl>
+    <aside class="rounded-md border border-line bg-surface px-[26px] py-6">
+      <span class="font-mono text-[10px] tracking-[0.2em] text-muted">INDEX</span>
+      <dl class="my-4 mb-5">
         {
           indexStats.map((stat) => (
-            <div class="ic-row">
-              <dt class="serif">{stat.value}</dt>
-              <dd>{stat.label}</dd>
+            <div class="flex items-baseline gap-3 border-b border-dashed border-line py-[9px] last:border-b-0">
+              <dt class="min-w-[44px] font-serif text-2xl font-semibold text-ink [font-variant-numeric:tabular-nums]">
+                {stat.value}
+              </dt>
+              <dd class="text-[13.5px] text-body">{stat.label}</dd>
             </div>
           ))
         }
       </dl>
-      <a class="ic-link" href={site.github}>
-        Everything else on GitHub <span class="arw">→</span>
+      <a
+        class="group inline-flex items-center gap-[7px] text-[13.5px] font-semibold text-accent"
+        href={site.github}
+      >
+        Everything else on GitHub{" "}
+        <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
       </a>
     </aside>
   </header>
 
-  <section class="wrap rows">
+  <section class="wrap pb-[72px]">
     {projects.map((project, i) => <ProjectRow project={project} index={i} />)}
   </section>
 
   <ContactCta />
 </BaseLayout>
-
-<style>
-  .work-head {
-    display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.75fr);
-    gap: 56px;
-    align-items: end;
-    padding-block: 68px 52px;
-  }
-
-  .head-l h1 {
-    font-size: clamp(36px, 4.6vw, 58px);
-    font-weight: 600;
-    line-height: 1.04;
-    letter-spacing: -0.015em;
-    margin: 16px 0 20px;
-  }
-
-  .head-l .eyebrow {
-    color: var(--accent);
-  }
-
-  .lead {
-    color: var(--body);
-    font-size: 17.5px;
-    max-width: 52ch;
-  }
-
-  /* small ledger card that balances the headline */
-  .index-card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    padding: 24px 26px;
-  }
-
-  .ic-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-  }
-
-  .index-card dl {
-    margin: 16px 0 20px;
-  }
-
-  .ic-row {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding: 9px 0;
-    border-bottom: 1px dashed var(--line);
-  }
-
-  .ic-row:last-child {
-    border-bottom: none;
-  }
-
-  .ic-row dt {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--ink);
-    min-width: 44px;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .ic-row dd {
-    font-size: 13.5px;
-    color: var(--body);
-  }
-
-  .ic-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--accent);
-  }
-
-  .ic-link .arw {
-    transition: 0.2s;
-  }
-
-  .ic-link:hover .arw {
-    transform: translateX(4px);
-  }
-
-  .rows {
-    padding-bottom: 72px;
-  }
-
-  @media (max-width: 900px) {
-    .work-head {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 34px;
-      padding-block: 44px 36px;
-    }
-  }
-</style>

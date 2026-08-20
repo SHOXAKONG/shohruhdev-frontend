@@ -121,7 +121,6 @@ export const projects: Project[] = [
 
 export type Skill = {
   icon: IconName;
-  variant: "data" | "backend" | "infra";
   title: string;
   sub: string;
   items: string[];
@@ -130,7 +129,6 @@ export type Skill = {
 export const skills: Skill[] = [
   {
     icon: "database",
-    variant: "data",
     title: "Data people trust",
     sub: "Figures that agree with each other, at any size.",
     items: [
@@ -142,7 +140,6 @@ export const skills: Skill[] = [
   },
   {
     icon: "server",
-    variant: "backend",
     title: "Services that hold up",
     sub: "The same behaviour on the ten-thousandth call as the first.",
     items: [
@@ -154,7 +151,6 @@ export const skills: Skill[] = [
   },
   {
     icon: "cube",
-    variant: "infra",
     title: "Deploys that are boring",
     sub: "Self-hosted, reproducible, one command away.",
     items: [

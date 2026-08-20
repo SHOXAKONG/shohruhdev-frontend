@@ -27,14 +27,23 @@ const isActive = (href: string) => {
 };
 ---
 
-<header class="nav">
-  <div class="wrap nav-inner">
+<header class="sticky top-0 z-50 border-b border-line bg-nav-bg backdrop-blur-md">
+  <div class="wrap flex h-19 items-center justify-between gap-5 max-[860px]:h-auto max-[860px]:flex-wrap max-[860px]:py-3.5">
     <Logo />
-    <nav class="tabs" aria-label="Primary">
+    <nav
+      data-tabs
+      class="flex gap-0.5 max-[860px]:order-3 max-[720px]:max-w-full max-[720px]:justify-start max-[720px]:overflow-x-auto max-[720px]:[scrollbar-width:none] max-[720px]:[overscroll-behavior-x:contain] max-[720px]:[-ms-overflow-style:none] max-[720px]:[&::-webkit-scrollbar]:hidden"
+      aria-label="Primary"
+    >
       {
         tabs.map((item) => (
           <a
-            class:list={["tab", { active: isActive(item.href) }]}
+            class:list={[
+              "whitespace-nowrap border-b-2 px-3.5 py-2 text-sm font-medium transition-colors duration-[180ms] ease-out",
+              isActive(item.href)
+                ? "border-accent text-ink"
+                : "border-transparent text-body hover:text-ink",
+            ]}
             href={item.href}
             aria-current={isActive(item.href) ? "page" : undefined}
           >
@@ -43,9 +52,14 @@ const isActive = (href: string) => {
         ))
       }
     </nav>
-    <div class="nav-end">
+    <div class="flex items-center gap-2.5">
       <ThemeToggle />
-      <a class="nav-cta" href="/#contact">Get in touch</a>
+      <a
+        class="rounded-sm bg-ink px-[18px] py-[11px] text-[13.5px] font-semibold text-paper transition-colors duration-[180ms] ease-out hover:bg-accent"
+        href="/#contact"
+      >
+        Get in touch
+      </a>
     </div>
   </div>
 </header>
@@ -54,8 +68,8 @@ const isActive = (href: string) => {
   // When the tab strip scrolls (narrow screens), keep the current page's tab
   // in view instead of hidden off the right edge.
   function centerActiveTab() {
-    const strip = document.querySelector<HTMLElement>(".tabs");
-    const active = strip?.querySelector<HTMLElement>(".tab.active");
+    const strip = document.querySelector<HTMLElement>("[data-tabs]");
+    const active = strip?.querySelector<HTMLElement>('[aria-current="page"]');
     if (!strip || !active || strip.scrollWidth <= strip.clientWidth) return;
 
     // offsetLeft would be relative to the sticky header, so measure with rects.
@@ -68,95 +82,3 @@ const isActive = (href: string) => {
   centerActiveTab();
   document.addEventListener("astro:page-load", centerActiveTab);
 </script>
-
-<style>
-  .nav {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    backdrop-filter: blur(12px);
-    background: var(--nav-bg);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .nav-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 76px;
-    gap: 20px;
-  }
-
-  .tabs {
-    display: flex;
-    gap: 2px;
-  }
-
-  .tab {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--body);
-    padding: 8px 14px;
-    border-bottom: 2px solid transparent;
-    transition: 0.18s ease;
-    white-space: nowrap;
-  }
-
-  .tab.active {
-    color: var(--ink);
-    border-bottom-color: var(--accent);
-  }
-
-  .tab:not(.active):hover {
-    color: var(--ink);
-  }
-
-  .nav-end {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .nav-cta {
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--paper);
-    background: var(--ink);
-    padding: 11px 18px;
-    border-radius: var(--r-sm);
-    transition: 0.18s ease;
-  }
-
-  .nav-cta:hover {
-    background: var(--accent);
-  }
-
-  @media (max-width: 860px) {
-    .tabs {
-      order: 3;
-    }
-
-    .nav-inner {
-      height: auto;
-      flex-wrap: wrap;
-      padding-top: 14px;
-      padding-bottom: 14px;
-    }
-  }
-
-  /* too many tabs for a phone: scroll the strip instead of clipping it */
-  @media (max-width: 720px) {
-    .tabs {
-      max-width: 100%;
-      overflow-x: auto;
-      justify-content: flex-start;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      overscroll-behavior-x: contain;
-    }
-
-    .tabs::-webkit-scrollbar {
-      display: none;
-    }
-  }
-</style>

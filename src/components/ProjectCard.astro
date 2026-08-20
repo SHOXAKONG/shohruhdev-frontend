@@ -10,129 +10,30 @@ const { project, index = 0 } = Astro.props;
 const number = String(index + 1).padStart(2, "0");
 ---
 
-<article class="card reveal">
-  <header class="head">
-    <span class="num">{number}</span>
-    <span class="cat">{project.category}</span>
+<article class="reveal flex flex-col rounded-md border border-line bg-surface p-[26px] pt-[26px] pb-[28px] transition-colors duration-[180ms] ease-out hover:border-ink">
+  <header class="mb-[18px] flex items-baseline gap-3 border-b border-line pb-3.5">
+    <span class="font-mono text-[10.5px] tracking-[0.14em] text-accent uppercase">{number}</span>
+    <span class="font-mono text-[10.5px] tracking-[0.14em] text-muted uppercase">{project.category}</span>
   </header>
 
-  <h3>{project.title}</h3>
-  <p class="outcome">{project.outcome}</p>
+  <h3 class="text-[23px] leading-[1.15] font-bold tracking-[-0.02em]">{project.title}</h3>
+  <p class="my-1.5 mb-5 text-[15px] text-accent">{project.outcome}</p>
 
-  <dl class="detail">
-    <dt>Problem</dt>
-    <dd>{project.problem}</dd>
-    <dt>Change</dt>
-    <dd>{project.approach}</dd>
+  <dl class="grid grid-cols-[74px_minmax(0,1fr)] gap-x-4 gap-y-1.5 border-t border-line pt-[18px] max-[560px]:grid-cols-[minmax(0,1fr)] max-[560px]:gap-1">
+    <dt class="pt-[3px] font-mono text-[10px] tracking-[0.12em] text-muted uppercase">Problem</dt>
+    <dd class="text-[14.5px] leading-[1.55] text-body max-[560px]:mb-2.5">{project.problem}</dd>
+    <dt class="pt-[3px] font-mono text-[10px] tracking-[0.12em] text-muted uppercase">Change</dt>
+    <dd class="text-[14.5px] leading-[1.55] text-body max-[560px]:mb-2.5">{project.approach}</dd>
   </dl>
 
   {
     project.href && (
-      <a class="card-link" href={project.href}>
-        View project <span class="arw">→</span>
+      <a
+        class="mt-5 inline-flex items-center gap-[7px] text-sm font-semibold text-accent"
+        href={project.href}
+      >
+        View project <span>→</span>
       </a>
     )
   }
 </article>
-
-<style>
-  /* flat bordered block — the structure comes from rules and type,
-     not from a coloured panel */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    padding: 26px 26px 28px;
-    display: flex;
-    flex-direction: column;
-    transition:
-      border-color 0.18s ease,
-      background 0.18s ease;
-  }
-
-  .card:hover {
-    border-color: var(--ink);
-  }
-
-  .head {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 18px;
-  }
-
-  .num,
-  .cat {
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  .num {
-    color: var(--accent);
-  }
-
-  .cat {
-    color: var(--muted);
-  }
-
-  h3 {
-    font-size: 23px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-  }
-
-  .outcome {
-    font-size: 15px;
-    color: var(--accent);
-    margin: 6px 0 20px;
-  }
-
-  .detail {
-    display: grid;
-    grid-template-columns: 74px minmax(0, 1fr);
-    gap: 6px 16px;
-    padding-top: 18px;
-    border-top: 1px solid var(--line);
-  }
-
-  .detail dt {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding-top: 3px;
-  }
-
-  .detail dd {
-    font-size: 14.5px;
-    line-height: 1.55;
-    color: var(--body);
-  }
-
-  .card-link {
-    margin-top: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--accent);
-  }
-
-  @media (max-width: 560px) {
-    .detail {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 4px;
-    }
-
-    .detail dd {
-      margin-bottom: 10px;
-    }
-  }
-</style>

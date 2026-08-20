@@ -19,18 +19,31 @@ const filters = ["All", ...blogCategories];
   title={`Blog — ${site.name}`}
   description="Notes from the pipeline: ETL patterns, Postgres tuning, backend auth, and the occasional Go side-project."
 >
-  <section class="wrap page-head reveal in">
-    <span class="eyebrow">Writing &amp; notes</span>
-    <h1 class="serif">Notes from the pipeline</h1>
-    <p>
+  <section class="reveal in wrap pt-16 pb-10 text-center">
+    <span class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+      Writing &amp; notes
+    </span>
+    <h1 class="my-3.5 font-serif text-[clamp(40px,5vw,60px)] font-semibold tracking-[-0.01em]">
+      Notes from the pipeline
+    </h1>
+    <p class="mx-auto max-w-[540px] text-lg text-body">
       Things I learn while building data infrastructure — ETL patterns, Postgres tuning,
       backend auth, and the occasional Go side-project.
     </p>
-    <div class="filters" role="group" aria-label="Filter posts by topic">
+    <div
+      class="mt-9 mb-2 flex flex-wrap justify-center gap-2.5"
+      role="group"
+      aria-label="Filter posts by topic"
+    >
       {
         filters.map((filter) => (
           <button
-            class:list={["filt", { on: filter === "All" }]}
+            class:list={[
+              "cursor-pointer rounded-sm border px-[18px] py-2.5 font-[inherit] text-[13px] font-semibold transition-colors duration-200",
+              filter === "All"
+                ? "border-ink bg-ink text-paper"
+                : "border-line bg-surface text-body hover:border-ink hover:bg-ink hover:text-paper",
+            ]}
             type="button"
             data-filter={filter}
             aria-pressed={filter === "All" ? "true" : "false"}
@@ -45,18 +58,33 @@ const filters = ["All", ...blogCategories];
   <section class="wrap">
     {featured && <FeaturedPost post={featured} />}
 
-    <div class="blog-grid" id="blog-grid">
+    <div
+      class="grid grid-cols-3 gap-6 py-4 pb-6 max-[960px]:grid-cols-2 max-[640px]:grid-cols-1 [&_[hidden]]:hidden"
+      id="blog-grid"
+    >
       {rest.map((post) => <PostCard post={post} />)}
     </div>
-    <p class="empty" id="blog-empty" hidden>No posts in this topic yet.</p>
+    <p class="py-6 pt-6 pb-2 text-center text-muted" id="blog-empty" hidden>
+      No posts in this topic yet.
+    </p>
   </section>
   <div style="height:64px"></div>
 </BaseLayout>
 
 <script>
   // Topic filter. Cards carry `data-category`; "All" clears the filter.
+  const ON = ["border-ink", "bg-ink", "text-paper"];
+  const OFF = [
+    "border-line",
+    "bg-surface",
+    "text-body",
+    "hover:border-ink",
+    "hover:bg-ink",
+    "hover:text-paper",
+  ];
+
   function initFilters() {
-    const buttons = document.querySelectorAll<HTMLButtonElement>(".filt");
+    const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
     const grid = document.getElementById("blog-grid");
     const empty = document.getElementById("blog-empty");
     if (!buttons.length || !grid) return;
@@ -69,7 +97,8 @@ const filters = ["All", ...blogCategories];
 
         for (const other of buttons) {
           const on = other === button;
-          other.classList.toggle("on", on);
+          other.classList.remove(...ON, ...OFF);
+          other.classList.add(...(on ? ON : OFF));
           other.setAttribute("aria-pressed", String(on));
         }
 
@@ -88,63 +117,3 @@ const filters = ["All", ...blogCategories];
   initFilters();
   document.addEventListener("astro:page-load", initFilters);
 </script>
-
-<style>
-  .filters {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 36px 0 8px;
-  }
-
-  .filt {
-    font-size: 13px;
-    font-weight: 600;
-    padding: 9px 18px;
-    border-radius: var(--r-sm);
-    border: 1px solid var(--line);
-    background: var(--surface);
-    color: var(--body);
-    cursor: pointer;
-    transition: 0.2s;
-    font-family: inherit;
-  }
-
-  .filt.on,
-  .filt:hover {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
-  }
-
-  .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    padding: 16px 0 24px;
-  }
-
-  @media (max-width: 960px) {
-    .blog-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .blog-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* cards are flex containers, so [hidden] needs help winning */
-  .blog-grid :global([hidden]) {
-    display: none;
-  }
-
-  .empty {
-    text-align: center;
-    color: var(--muted);
-    padding: 24px 0 8px;
-  }
-</style>

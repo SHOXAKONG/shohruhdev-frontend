@@ -14,56 +14,85 @@ const facts = [
   title={`About — ${site.name}`}
   description="Shohruh Bekmurodov — software engineer. The problems he works on, and how he goes about solving them."
 >
-  <header class="wrap about-head reveal in">
-    <span class="eyebrow">About</span>
-    <h1 class="serif">
-      I build the layer<br /> nobody sees <em>until it breaks.</em>
+  <header class="reveal in wrap pt-[68px] pb-11">
+    <span class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+      About
+    </span>
+    <h1 class="my-4 mb-9 max-w-[16ch] font-serif text-[clamp(38px,5vw,62px)] leading-[1.04] font-semibold tracking-[-0.015em]">
+      I build the layer<br /> nobody sees{" "}
+      <em class="font-light text-accent italic">until it breaks.</em>
     </h1>
-    <dl class="facts">
+    <dl class="grid grid-cols-4 gap-5 border-t border-line pt-[22px] max-[900px]:grid-cols-2">
       {
         facts.map((fact) => (
           <div>
-            <dt>{fact.label}</dt>
-            <dd>{fact.value}</dd>
+            <dt class="mb-1.5 font-mono text-[10px] tracking-[0.18em] text-muted uppercase">
+              {fact.label}
+            </dt>
+            <dd class="text-[15px] font-medium">{fact.value}</dd>
           </div>
         ))
       }
     </dl>
   </header>
 
-  <div class="wrap about-body">
-    <aside class="profile reveal">
-      <div class="pcard">
-        <div class="pcard-top">
-          <div class="avatar" aria-hidden="true">{site.initials}</div>
+  <div class="wrap grid grid-cols-[300px_minmax(0,1fr)] items-start gap-[60px] pt-5 pb-10 max-[900px]:grid-cols-[minmax(0,1fr)] max-[900px]:gap-9">
+    <aside class="reveal sticky top-[100px] max-[900px]:static">
+      <div class="rounded-lg border border-line bg-surface p-[26px]">
+        <div class="mb-[18px] flex items-center gap-3.5">
+          <div
+            class="grid size-[54px] place-items-center rounded-sm bg-ink font-mono text-[17px] font-medium tracking-[0.02em] text-paper"
+            aria-hidden="true"
+          >
+            {site.initials}
+          </div>
           <div>
-            <b>{site.name}</b>
-            <span>{site.role}</span>
+            <b class="block font-serif text-[17px] font-semibold">{site.name}</b>
+            <span class="text-[13.5px] text-body">{site.role}</span>
           </div>
         </div>
-        <p class="pbio">{site.bio}</p>
-        <span class="status"><span class="sdot"></span>Available for new projects</span>
-        <div class="plinks">
-          <a class="btn btn-primary btn-sm" href={`mailto:${site.email}`}>Email me</a>
-          <a class="btn btn-ghost btn-sm" href={site.github}>GitHub</a>
+        <p class="border-b border-line pb-[18px] text-[14.5px] leading-[1.6] text-body">
+          {site.bio}
+        </p>
+        <span class="my-[18px] inline-flex items-center gap-[9px] rounded-sm bg-accent-tint px-3.5 py-[7px] text-[13px] font-semibold text-accent">
+          <span class="size-2 rounded-full bg-accent shadow-[0_0_0_4px_rgba(47,191,155,0.16)]" />
+          Available for new projects
+        </span>
+        <div class="flex flex-wrap gap-2.5">
+          <a
+            class="inline-flex items-center gap-2 rounded-sm bg-accent px-[18px] py-[11px] text-sm font-semibold tracking-[-0.01em] text-paper transition-colors duration-[180ms] ease-out hover:bg-accent-strong"
+            href={`mailto:${site.email}`}
+          >
+            Email me
+          </a>
+          <a
+            class="inline-flex items-center gap-2 rounded-sm border-[1.5px] border-line bg-surface px-[18px] py-[11px] text-sm font-semibold tracking-[-0.01em] text-ink transition-colors duration-[180ms] ease-out hover:border-accent hover:text-accent"
+            href={site.github}
+          >
+            GitHub
+          </a>
         </div>
       </div>
     </aside>
 
-    <main class="about-main">
+    <main>
       <section class="reveal">
-        <h2 class="serif">What I work on</h2>
-        <div class="rail">
+        <h2 class="mb-[26px] font-serif text-3xl font-semibold tracking-[-0.01em]">
+          What I work on
+        </h2>
+        <div class="relative pl-[26px] before:absolute before:top-2 before:bottom-2 before:left-1 before:w-0.5 before:rounded-sm before:bg-accent before:opacity-35 before:content-['']">
           {
             skills.map((skill) => (
-              <div class="rail-item">
-                <span class="rail-dot" />
+              <div class="relative pb-[30px] last:pb-0">
+                <span class="absolute top-[7px] left-[-26px] size-2.5 rounded-full border-2 border-accent bg-surface" />
                 <div>
-                  <h3>{skill.title}</h3>
-                  <p>{skill.sub}</p>
-                  <div class="rail-tags">
+                  <h3 class="mb-1 text-[17px] font-semibold">{skill.title}</h3>
+                  <p class="mb-3 text-[15px] text-body">{skill.sub}</p>
+                  <div class="flex flex-wrap gap-2">
                     {skill.items.map((item) => (
-                      <span>{item}</span>
+                      <span class="rounded-[8px] bg-paper-2 px-2.5 py-[5px] text-[12.5px] text-body">
+                        {item}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -73,32 +102,47 @@ const facts = [
         </div>
       </section>
 
-      <section class="reveal">
-        <h2 class="serif">How I work</h2>
-        <div class="principles">
+      <section class="reveal mt-14">
+        <h2 class="mb-[26px] font-serif text-3xl font-semibold tracking-[-0.01em]">
+          How I work
+        </h2>
+        <div class="grid grid-cols-2 gap-4 max-[900px]:grid-cols-1">
           {
             principles.map((principle, i) => (
-              <article class="principle">
-                <span class="pnum serif">{String(i + 1).padStart(2, "0")}</span>
-                <h3 class="serif">{principle.title}</h3>
-                <p>{principle.body}</p>
+              <article class="rounded-md border border-line bg-surface p-6 pt-6 pb-[26px]">
+                <span class="rounded-[8px] bg-accent-tint px-2.5 py-[3px] font-serif text-[13px] font-semibold text-accent">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 class="mt-3.5 mb-2 font-serif text-[19px] font-semibold">
+                  {principle.title}
+                </h3>
+                <p class="text-[14.5px] leading-[1.6] text-body">{principle.body}</p>
               </article>
             ))
           }
         </div>
       </section>
 
-      <section id="process" class="reveal">
-        <h2 class="serif">How a problem goes</h2>
-        <div class="tools">
+      <section id="process" class="reveal mt-14">
+        <h2 class="mb-[26px] font-serif text-3xl font-semibold tracking-[-0.01em]">
+          How a problem goes
+        </h2>
+        <div class="border-t border-line">
           {
             process.map((phase, i) => (
-              <div class:list={["tool-row", `tone-${phase.tone}`]}>
-                <span class="tool-group">
-                  <span class="step-num">{String(i + 1).padStart(2, "0")}</span>
+              <div
+                class:list={[
+                  `tone-${phase.tone}`,
+                  "grid grid-cols-[190px_minmax(0,1fr)] items-baseline gap-6 border-b border-line px-1 py-5 max-[560px]:grid-cols-[minmax(0,1fr)] max-[560px]:gap-2.5",
+                ]}
+              >
+                <span class="flex items-baseline gap-2.5 font-mono text-[11px] tracking-[0.14em] text-[color:var(--tone-fg)] uppercase">
+                  <span class="rounded-[6px] bg-[color:var(--tone-bg)] px-[7px] py-[3px] tracking-[0.06em]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                   {phase.step}
                 </span>
-                <p class="tool-body">{phase.body}</p>
+                <p class="text-[15px] leading-[1.6] text-body">{phase.body}</p>
               </div>
             ))
           }
@@ -109,323 +153,3 @@ const facts = [
 
   <ContactCta />
 </BaseLayout>
-
-<style>
-  /* ---- header --------------------------------------------------- */
-  .about-head {
-    padding-block: 68px 44px;
-  }
-
-  .about-head .eyebrow {
-    color: var(--accent);
-  }
-
-  .about-head h1 {
-    font-size: clamp(38px, 5vw, 62px);
-    font-weight: 600;
-    line-height: 1.04;
-    letter-spacing: -0.015em;
-    margin: 16px 0 36px;
-    max-width: 16ch;
-  }
-
-  .about-head h1 em {
-    font-weight: 300;
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .facts {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 20px;
-    border-top: 1px solid var(--line);
-    padding-top: 22px;
-  }
-
-  .facts dt {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-
-  .facts dd {
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  /* ---- two column body ------------------------------------------ */
-  .about-body {
-    display: grid;
-    grid-template-columns: 300px minmax(0, 1fr);
-    gap: 60px;
-    align-items: start;
-    padding-block: 20px 40px;
-  }
-
-  .profile {
-    position: sticky;
-    top: 100px;
-  }
-
-  .pcard {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    padding: 26px;
-  }
-
-  .pcard-top {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 18px;
-  }
-
-  .pcard-top b {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    font-size: 17px;
-    display: block;
-  }
-
-  .pcard-top span {
-    font-size: 13.5px;
-    color: var(--body);
-  }
-
-  .pbio {
-    font-size: 14.5px;
-    color: var(--body);
-    line-height: 1.6;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .status {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--accent-tint);
-    border-radius: var(--r-sm);
-    padding: 7px 14px;
-    margin: 18px 0;
-  }
-
-  .sdot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 4px rgba(47, 191, 155, 0.16);
-  }
-
-  .plinks {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .btn-sm {
-    padding: 11px 18px;
-    font-size: 14px;
-  }
-
-  /* ---- sections -------------------------------------------------- */
-  .about-main section + section {
-    margin-top: 56px;
-  }
-
-  .about-main h2 {
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin-bottom: 26px;
-  }
-
-  /* what I work on — vertical rail */
-  .rail {
-    position: relative;
-    padding-left: 26px;
-  }
-
-  .rail::before {
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: 8px;
-    bottom: 8px;
-    width: 2px;
-    background: linear-gradient(
-      to bottom,
-      var(--accent),
-      var(--accent) 50%,
-      var(--accent)
-    );
-    border-radius: var(--r-sm);
-    opacity: 0.35;
-  }
-
-  .rail-item {
-    position: relative;
-    padding-bottom: 30px;
-  }
-
-  .rail-item:last-child {
-    padding-bottom: 0;
-  }
-
-  .rail-dot {
-    position: absolute;
-    left: -26px;
-    top: 7px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 2px solid var(--accent);
-  }
-
-  .rail-item:nth-child(2) .rail-dot {
-    border-color: var(--accent);
-  }
-
-  .rail-item:nth-child(3) .rail-dot {
-    border-color: var(--accent);
-  }
-
-  .rail-item h3 {
-    font-size: 17px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-
-  .rail-item p {
-    color: var(--body);
-    font-size: 15px;
-    margin-bottom: 12px;
-  }
-
-  .rail-tags {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .rail-tags span {
-    font-size: 12.5px;
-    color: var(--body);
-    background: var(--paper-2);
-    border-radius: 8px;
-    padding: 5px 10px;
-  }
-
-  /* how I work — numbered cards */
-  .principles {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-  }
-
-  .principle {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    padding: 24px 24px 26px;
-    transition: 0.25s;
-  }
-
-  .principle:hover {
-  }
-
-  .pnum {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--accent-tint);
-    border-radius: 8px;
-    padding: 3px 9px;
-  }
-
-  .principle h3 {
-    font-size: 19px;
-    font-weight: 600;
-    margin: 14px 0 8px;
-  }
-
-  .principle p {
-    color: var(--body);
-    font-size: 14.5px;
-    line-height: 1.6;
-  }
-
-  /* toolbox — label + chips rows */
-  .tools {
-    border-top: 1px solid var(--line);
-  }
-
-  .tool-row {
-    display: grid;
-    grid-template-columns: 190px minmax(0, 1fr);
-    gap: 24px;
-    align-items: baseline;
-    padding: 20px 4px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .tool-group {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--tone-fg);
-  }
-
-  .step-num {
-    background: var(--tone-bg);
-    border-radius: 6px;
-    padding: 3px 7px;
-    letter-spacing: 0.06em;
-  }
-
-  .tool-body {
-    font-size: 15px;
-    color: var(--body);
-    line-height: 1.6;
-  }
-
-  @media (max-width: 900px) {
-    .about-body {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 36px;
-    }
-
-    .profile {
-      position: static;
-    }
-
-    .facts {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .principles {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  @media (max-width: 560px) {
-    .tool-row {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 10px;
-    }
-  }
-</style>

@@ -6,53 +6,19 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, tag, tone, readingTime } = post.data;
+const { title, tag, readingTime } = post.data;
 ---
 
-<a class="mini reveal" href={`/blog/${post.id}`}>
-  <div class="meta">
-    <span class:list={["tagchip", `tone-${tone}`]}>{tag}</span> · {readingTime} min read
+<a
+  class="reveal flex min-h-[220px] flex-col gap-3.5 rounded-md border border-line bg-surface p-6 transition-colors duration-[250ms] ease-out hover:border-ink"
+  href={`/blog/${post.id}`}
+>
+  <div class="flex items-center gap-2.5 text-xs text-muted">
+    <span class="rounded-sm border border-line px-2 py-1 font-mono text-[10.5px] font-medium tracking-[0.1em] text-muted uppercase">
+      {tag}
+    </span>{" "}
+    · {readingTime} min read
   </div>
-  <h3 class="serif">{title}</h3>
-  <span class="read">Read post →</span>
+  <h3 class="font-serif text-xl leading-tight font-semibold">{title}</h3>
+  <span class="mt-auto text-[13px] font-semibold text-accent">Read post →</span>
 </a>
-
-<style>
-  .mini {
-    border-radius: var(--r-md);
-    padding: 24px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    transition: 0.25s;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 220px;
-  }
-
-  .mini:hover {
-    border-color: var(--ink);
-  }
-
-  .meta {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  h3 {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 1.2;
-  }
-
-  .read {
-    margin-top: auto;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-  }
-</style>
