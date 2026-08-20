@@ -1,0 +1,80 @@
+---
+// Shared chrome for the status-code pages (404, 403, 500, 502, …): headline,
+// a small "pipe" strip showing where the request failed, and a suggested-
+// pages grid. Each page supplies its own copy and pipe steps.
+interface PipeNode {
+  label: string;
+  state: "ok" | "fail";
+}
+
+interface Props {
+  eyebrow: string;
+  titleLead: string;
+  titleEm: string;
+  lead: string;
+  pipeLabel: string;
+  pipe: PipeNode[];
+}
+
+const { eyebrow, titleLead, titleEm, lead, pipeLabel, pipe } = Astro.props;
+
+const links = [
+  { label: "Home", href: "/", note: "Start from the top" },
+  { label: "Work", href: "/projects", note: "Problems and what fixed them" },
+  { label: "Blog", href: "/blog", note: "Notes from the pipeline" },
+  { label: "About", href: "/about", note: "How I work" },
+];
+---
+
+<section class="wrap max-w-[720px] pt-[90px] pb-[110px] text-center max-[560px]:pt-14 max-[560px]:pb-[72px]">
+  <span class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+    {eyebrow}
+  </span>
+  <h1 class="my-4 mb-5 font-serif text-[clamp(38px,5.4vw,62px)] leading-[1.04] font-semibold tracking-[-0.015em]">
+    {titleLead}<br /> <em class="font-light text-accent italic">{titleEm}</em>
+  </h1>
+  <p class="mx-auto mb-10 max-w-[46ch] text-[17.5px] text-body">{lead}</p>
+
+  <div
+    class="mb-12 inline-flex flex-wrap items-center justify-center gap-2.5 rounded-sm border border-line bg-surface px-[18px] py-3"
+    role="img"
+    aria-label={pipeLabel}
+  >
+    {
+      pipe.map((node, i) => (
+        <>
+          {i > 0 && (
+            <span class={node.state === "fail" ? "animate-flicker text-accent" : "text-muted"}>
+              →
+            </span>
+          )}
+          <span
+            class:list={[
+              "rounded-sm bg-accent-tint px-[18px] py-2.5 text-[13px] font-semibold text-accent",
+              { "font-mono tracking-[0.06em]": node.state === "fail" },
+            ]}
+          >
+            {node.label}
+          </span>
+        </>
+      ))
+    }
+  </div>
+
+  <nav class="grid grid-cols-2 gap-3 text-left max-[560px]:grid-cols-1" aria-label="Suggested pages">
+    {
+      links.map((link) => (
+        <a
+          class="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 rounded-sm border border-line bg-surface px-[18px] py-4 transition-colors duration-200 hover:border-accent"
+          href={link.href}
+        >
+          <span class="text-[15px] font-semibold">{link.label}</span>
+          <span class="col-start-1 text-[13px] text-muted">{link.note}</span>
+          <span class="col-start-2 row-span-2 row-start-1 text-accent transition-transform duration-200 group-hover:translate-x-1">
+            →
+          </span>
+        </a>
+      ))
+    }
+  </nav>
+</section>
