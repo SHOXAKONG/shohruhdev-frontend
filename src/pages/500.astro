@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ErrorState from "../components/ErrorState.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout
+  title={`Something broke — ${site.name}`}
+  description="An unexpected error happened on the server."
+>
+  <ErrorState
+    eyebrow="Error 500"
+    titleLead="Something broke"
+    titleEm="where you can't see it."
+    lead="The request made it here and failed on the way back. That's on this end, not yours — try again in a bit."
+    pipeLabel="Request received and handled, then the handler failed"
+    pipe={[
+      { label: "Request", state: "ok" },
+      { label: "Handler", state: "ok" },
+      { label: "500", state: "fail" },
+    ]}
+  />
+</BaseLayout>

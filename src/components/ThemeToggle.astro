@@ -8,13 +8,21 @@ import Icon from "./Icon.astro";
 */}
 <button
   id="theme-toggle"
-  class="theme-toggle"
+  class="grid size-9 flex-none cursor-pointer place-items-center rounded-sm border border-line bg-transparent font-[inherit] text-body transition-[color,border-color,transform] duration-200 ease-out hover:border-accent hover:text-accent"
   type="button"
   title="Switch theme"
   aria-label="Switch to dark theme"
 >
-  <span class="ico sun"><Icon name="sun" size={18} /></span>
-  <span class="ico moon"><Icon name="moon" size={18} /></span>
+  <span
+    class="[grid-area:1/1] grid place-items-center opacity-0 [transition:opacity_.25s_ease,transform_.35s_ease] [transform:rotate(-45deg)_scale(0.6)] dark:opacity-100 dark:[transform:none]"
+  >
+    <Icon name="sun" size={18} />
+  </span>
+  <span
+    class="[grid-area:1/1] grid place-items-center opacity-100 [transition:opacity_.25s_ease,transform_.35s_ease] dark:opacity-0 dark:[transform:rotate(-45deg)_scale(0.6)]"
+  >
+    <Icon name="moon" size={18} />
+  </span>
 </button>
 
 <script>
@@ -83,50 +91,3 @@ import Icon from "./Icon.astro";
   apply(current());
   document.addEventListener("astro:page-load", () => apply(current()));
 </script>
-
-<style>
-  .theme-toggle {
-    width: 36px;
-    height: 36px;
-    flex: none;
-    display: grid;
-    place-items: center;
-    border-radius: var(--r-sm);
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--body);
-    cursor: pointer;
-    font-family: inherit;
-    transition:
-      color 0.2s,
-      border-color 0.2s,
-      transform 0.2s;
-  }
-
-  .theme-toggle:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .ico {
-    grid-area: 1 / 1;
-    display: grid;
-    place-items: center;
-    transition:
-      opacity 0.25s ease,
-      transform 0.35s ease;
-  }
-
-  /* light theme shows the moon (what you'd switch to), dark shows the sun */
-  :global(:root[data-theme="dark"]) .moon,
-  :global(:root:not([data-theme="dark"])) .sun {
-    opacity: 0;
-    transform: rotate(-45deg) scale(0.6);
-  }
-
-  :global(:root[data-theme="dark"]) .sun,
-  :global(:root:not([data-theme="dark"])) .moon {
-    opacity: 1;
-    transform: none;
-  }
-</style>

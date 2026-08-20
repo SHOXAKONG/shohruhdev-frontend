@@ -10,74 +10,20 @@ const { post } = Astro.props;
 const { title, description, tag, pubDate, readingTime, category } = post.data;
 ---
 
-<a class="post reveal" href={`/blog/${post.id}`} data-category={category}>
-  <div class="meta">
-    <span class="tag">{tag}</span>
-    <span class="date">{formatDate(pubDate)}</span>
+<a
+  class="group reveal flex flex-col border-t-2 border-ink pt-[18px] pb-6 transition-colors duration-[180ms] ease-out hover:border-accent"
+  href={`/blog/${post.id}`}
+  data-category={category}
+>
+  <div class="mb-4 flex items-baseline justify-between gap-3 font-mono text-[10.5px] tracking-[0.12em] uppercase">
+    <span class="text-accent">{tag}</span>
+    <span class="text-muted">{formatDate(pubDate)}</span>
   </div>
-  <h3>{title}</h3>
-  <p>{description}</p>
-  <span class="read">{readingTime} min read</span>
+  <h3 class="mb-2.5 text-xl leading-[1.2] font-bold tracking-[-0.02em] transition-colors duration-[180ms] ease-out group-hover:text-accent">
+    {title}
+  </h3>
+  <p class="mb-[18px] text-[14.5px] leading-[1.55] text-body">{description}</p>
+  <span class="mt-auto font-mono text-[10.5px] tracking-[0.12em] text-muted uppercase">
+    {readingTime} min read
+  </span>
 </a>
-
-<style>
-  .post {
-    border-top: 2px solid var(--ink);
-    padding: 18px 0 24px;
-    display: flex;
-    flex-direction: column;
-    transition: border-color 0.18s ease;
-  }
-
-  .post:hover {
-    border-top-color: var(--accent);
-  }
-
-  .meta {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .tag {
-    color: var(--accent);
-  }
-
-  .date {
-    color: var(--muted);
-  }
-
-  h3 {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin-bottom: 10px;
-  }
-
-  .post:hover h3 {
-    color: var(--accent);
-  }
-
-  p {
-    font-size: 14.5px;
-    line-height: 1.55;
-    color: var(--body);
-    margin-bottom: 18px;
-  }
-
-  .read {
-    margin-top: auto;
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-</style>

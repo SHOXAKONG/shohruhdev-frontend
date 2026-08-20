@@ -9,15 +9,25 @@ interface Props {
 const { eyebrow, title, linkLabel, linkHref } = Astro.props;
 ---
 
-<div class="section-head reveal">
+<div class="reveal flex items-end justify-between gap-6 mb-11">
   <div>
-    <span class="eyebrow">{eyebrow}</span>
-    <h2 class="serif">{title}</h2>
+    <span class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+      {eyebrow}
+    </span>
+    <h2 class="mt-3 font-serif text-[clamp(30px,3.4vw,42px)] leading-[1.06] font-semibold tracking-[-0.01em]">
+      {title}
+    </h2>
   </div>
   {
     linkLabel && linkHref && (
-      <a class="link-more" href={linkHref}>
-        {linkLabel} <span class="arw">→</span>
+      <a
+        class="group inline-flex items-center gap-[7px] pb-1.5 text-[15px] font-semibold whitespace-nowrap"
+        href={linkHref}
+      >
+        {linkLabel}{" "}
+        <span class="text-accent transition-transform duration-200 group-hover:translate-x-1">
+          →
+        </span>
       </a>
     )
   }

@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ErrorState from "../components/ErrorState.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout
+  title={`Upstream didn't answer — ${site.name}`}
+  description="A service this page depends on didn't respond."
+>
+  <ErrorState
+    eyebrow="Error 502"
+    titleLead="The upstream"
+    titleEm="didn't answer back."
+    lead="This server is fine — whatever it asked to fetch on your behalf wasn't. Usually temporary, worth a retry."
+    pipeLabel="Request forwarded upstream, then no response came back"
+    pipe={[
+      { label: "Request", state: "ok" },
+      { label: "Upstream", state: "fail" },
+    ]}
+  />
+</BaseLayout>

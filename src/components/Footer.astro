@@ -11,89 +11,33 @@ const columns = footerColumns.map((col) => ({
 }));
 ---
 
-<footer class="wrap footer">
-  <div class="foot-top">
-    <div class="foot-bio">
+<footer class="wrap border-t border-line pt-14 pb-10">
+  <div class="mb-10 flex flex-wrap justify-between gap-10">
+    <div class="max-w-[320px]">
       <Logo />
-      <p>{site.bio}</p>
+      <p class="mt-3.5 text-sm text-body">{site.bio}</p>
     </div>
-    <div class="foot-cols">
+    <div class="flex flex-wrap gap-16">
       {
         columns.map((col) => (
-          <div class="foot-col">
-            <h4>{col.heading}</h4>
+          <div>
+            <h4 class="mb-4 font-mono text-[11px] tracking-[0.16em] text-muted uppercase">
+              {col.heading}
+            </h4>
             {col.links.map((link) => (
-              <a href={link.href}>{link.label}</a>
+              <a
+                class="mb-[11px] block text-sm text-body transition-colors duration-200 hover:text-accent"
+                href={link.href}
+              >
+                {link.label}
+              </a>
             ))}
           </div>
         ))
       }
     </div>
   </div>
-  <div class="foot-bottom">
+  <div class="flex flex-wrap justify-between gap-3 border-t border-line pt-6 text-[13px] text-muted">
     <span>© {year} {site.name}</span>
   </div>
 </footer>
-
-<style>
-  .footer {
-    border-top: 1px solid var(--line);
-    padding-block: 56px 40px;
-  }
-
-  .foot-top {
-    display: flex;
-    justify-content: space-between;
-    gap: 40px;
-    flex-wrap: wrap;
-    margin-bottom: 40px;
-  }
-
-  .foot-bio {
-    max-width: 320px;
-  }
-
-  .foot-bio p {
-    color: var(--body);
-    font-size: 14px;
-    margin-top: 14px;
-  }
-
-  .foot-cols {
-    display: flex;
-    gap: 64px;
-    flex-wrap: wrap;
-  }
-
-  .foot-col h4 {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 16px;
-  }
-
-  .foot-col a {
-    display: block;
-    color: var(--body);
-    font-size: 14px;
-    margin-bottom: 11px;
-    transition: 0.2s;
-  }
-
-  .foot-col a:hover {
-    color: var(--accent);
-  }
-
-  .foot-bottom {
-    border-top: 1px solid var(--line);
-    padding-top: 24px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-</style>

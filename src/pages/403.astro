@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ErrorState from "../components/ErrorState.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout
+  title={`Access denied — ${site.name}`}
+  description="You don't have access to this page."
+>
+  <ErrorState
+    eyebrow="Error 403"
+    titleLead="This path exists,"
+    titleEm="but it's not yours to read."
+    lead="The route is real — whatever checks access here said no. If that's wrong, it's worth a second look, not a workaround."
+    pipeLabel="Request received and authenticated, then access denied"
+    pipe={[
+      { label: "Request", state: "ok" },
+      { label: "Auth", state: "ok" },
+      { label: "403", state: "fail" },
+    ]}
+  />
+</BaseLayout>
