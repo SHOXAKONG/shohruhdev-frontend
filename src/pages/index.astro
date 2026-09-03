@@ -17,7 +17,7 @@ const posts = (await getCollection("blog"))
 <BaseLayout>
   <Hero />
 
-  <section id="work" class="wrap py-[72px]">
+  <section id="work" class="wrap py-24 max-[720px]:py-16">
     <SectionHead
       eyebrow="Selected work"
       title="Things I've built"
@@ -30,22 +30,22 @@ const posts = (await getCollection("blog"))
   </section>
 
   <section class="border-y border-line bg-paper-2">
-    <div class="wrap py-[72px]">
+    <div class="wrap py-24 max-[720px]:py-16">
       <SectionHead eyebrow="What I do" title="Three things, done well" />
-      <div class="mt-11 grid grid-cols-3 gap-[22px] max-[820px]:grid-cols-1">
-        {skills.map((skill) => <SkillCard skill={skill} />)}
+      <div class="mt-11">
+        {skills.map((skill, i) => <SkillCard skill={skill} index={i} />)}
       </div>
     </div>
   </section>
 
-  <section class="wrap py-[72px]">
+  <section class="wrap py-24 max-[720px]:py-16">
     <SectionHead
       eyebrow="Writing"
       title="From the blog"
       linkLabel="All posts"
       linkHref="/blog"
     />
-    <div class="grid grid-cols-3 gap-[22px] max-[820px]:grid-cols-1">
+    <div class="mt-11 max-w-[720px]">
       {posts.map((post) => <MiniPost post={post} />)}
     </div>
   </section>

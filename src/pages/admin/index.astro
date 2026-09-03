@@ -1,0 +1,156 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import PostForm from "../../components/admin/PostForm.astro";
+import ProjectForm from "../../components/admin/ProjectForm.astro";
+import SkillForm from "../../components/admin/SkillForm.astro";
+
+const tabs = [
+  { id: "post", label: "New post" },
+  { id: "project", label: "New project" },
+  { id: "skill", label: "New skill" },
+];
+---
+
+<AdminLayout title="Admin — add content">
+  <div id="admin-gate" class="max-w-[380px]">
+    <span class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+      Sign in
+    </span>
+    <h1 class="my-3 font-serif text-3xl font-semibold">Admin login</h1>
+    <p class="mb-6 text-[15px] text-body">
+      Single admin account, bootstrapped server-side — there's no signup here.
+    </p>
+    <form id="login-form">
+      <div class="mb-4">
+        <label class="mb-1.5 block font-mono text-[10.5px] tracking-[0.14em] text-muted uppercase" for="login-username">
+          Username
+        </label>
+        <input
+          id="login-username"
+          type="text"
+          autocomplete="username"
+          required
+          class="w-full rounded-sm border border-line bg-surface px-3.5 py-2.5 text-[14.5px] text-ink outline-none transition-colors duration-200 focus:border-accent"
+        />
+      </div>
+      <div class="mb-5">
+        <label class="mb-1.5 block font-mono text-[10.5px] tracking-[0.14em] text-muted uppercase" for="login-password">
+          Password
+        </label>
+        <input
+          id="login-password"
+          type="password"
+          autocomplete="current-password"
+          required
+          class="w-full rounded-sm border border-line bg-surface px-3.5 py-2.5 text-[14.5px] text-ink outline-none transition-colors duration-200 focus:border-accent"
+        />
+      </div>
+      <button
+        type="submit"
+        class="w-full rounded-sm bg-accent px-5 py-2.5 text-[14px] font-semibold text-paper transition-colors duration-200 hover:bg-accent-strong"
+      >
+        Log in
+      </button>
+      <p id="login-status" hidden></p>
+    </form>
+  </div>
+
+  <div id="admin-panel" hidden>
+    <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <span class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+          Add content
+        </span>
+        <h1 class="mt-2 font-serif text-3xl font-semibold">What are we adding?</h1>
+      </div>
+      <button
+        id="sign-out"
+        type="button"
+        class="text-[13px] text-muted transition-colors duration-200 hover:text-accent"
+      >
+        Sign out
+      </button>
+    </div>
+
+    <div class="mb-10 flex flex-wrap gap-2.5">
+      {
+        tabs.map((tab, i) => (
+          <button
+            type="button"
+            data-tab={tab.id}
+            class:list={[
+              "cursor-pointer rounded-sm border px-[18px] py-2.5 text-[13px] font-semibold transition-colors duration-200",
+              i === 0
+                ? "border-ink bg-ink text-paper"
+                : "border-line bg-surface text-body hover:border-ink",
+            ]}
+          >
+            {tab.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <div data-panel="post"><PostForm /></div>
+    <div data-panel="project" hidden><ProjectForm /></div>
+    <div data-panel="skill" hidden><SkillForm /></div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { getToken, clearToken, login, showStatus } from "../../scripts/admin-api";
+
+  const gate = document.getElementById("admin-gate") as HTMLElement;
+  const panel = document.getElementById("admin-panel") as HTMLElement;
+  const loginForm = document.getElementById("login-form") as HTMLFormElement;
+  const loginStatus = document.getElementById("login-status") as HTMLElement;
+
+  function applyGateState() {
+    const signedIn = !!getToken();
+    gate.hidden = signedIn;
+    panel.hidden = !signedIn;
+  }
+
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const username = (document.getElementById("login-username") as HTMLInputElement).value.trim();
+    const password = (document.getElementById("login-password") as HTMLInputElement).value;
+
+    try {
+      await login(username, password);
+      loginForm.reset();
+      applyGateState();
+    } catch (error) {
+      showStatus(loginStatus, "error", error instanceof Error ? error.message : "Login failed.");
+    }
+  });
+
+  document.getElementById("sign-out")?.addEventListener("click", () => {
+    clearToken();
+    applyGateState();
+  });
+
+  // Tabs — same on/off classList swap as the /blog filter buttons, so an
+  // active tab's colors don't depend on Tailwind's internal class ordering.
+  const TAB_ON = ["border-ink", "bg-ink", "text-paper"];
+  const TAB_OFF = ["border-line", "bg-surface", "text-body", "hover:border-ink"];
+
+  const tabButtons = document.querySelectorAll<HTMLButtonElement>("[data-tab]");
+  const tabPanels = document.querySelectorAll<HTMLElement>("[data-panel]");
+
+  for (const button of tabButtons) {
+    button.addEventListener("click", () => {
+      const target = button.dataset.tab;
+      for (const other of tabButtons) {
+        const on = other === button;
+        other.classList.remove(...TAB_ON, ...TAB_OFF);
+        other.classList.add(...(on ? TAB_ON : TAB_OFF));
+      }
+      for (const p of tabPanels) {
+        p.hidden = p.dataset.panel !== target;
+      }
+    });
+  }
+
+  applyGateState();
+</script>

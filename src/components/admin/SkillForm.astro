@@ -1,0 +1,102 @@
+---
+const input =
+  "w-full rounded-sm border border-line bg-surface px-3.5 py-2.5 text-[14.5px] text-ink outline-none transition-colors duration-200 focus:border-accent";
+const label = "mb-1.5 block font-mono text-[10.5px] tracking-[0.14em] text-muted uppercase";
+---
+
+<form id="skill-form" class="max-w-[640px]">
+  <div class="mb-5">
+    <label class={label} for="skill-title">Title</label>
+    <input id="skill-title" name="title" type="text" required class={input} />
+  </div>
+
+  <div class="mb-5">
+    <label class={label} for="skill-sub">Subtitle</label>
+    <input id="skill-sub" name="sub" type="text" required class={input} />
+  </div>
+
+  <div class="mb-6">
+    <label class={label} id="skill-items-label">Items <span class="normal-case text-muted">(optional)</span></label>
+    <div id="skill-items" class="flex flex-col gap-2"></div>
+    <button
+      type="button"
+      id="skill-item-add"
+      class="mt-2.5 text-[13px] font-semibold text-accent transition-colors duration-200 hover:text-accent-strong"
+    >
+      + Add item
+    </button>
+  </div>
+
+  <button
+    type="submit"
+    class="rounded-sm bg-accent px-6 py-3 text-[14.5px] font-semibold text-paper transition-colors duration-200 hover:bg-accent-strong"
+  >
+    Add skill
+  </button>
+  <p id="skill-status" hidden></p>
+</form>
+
+<script>
+  import { adminRequest, showStatus } from "../../scripts/admin-api";
+
+  const form = document.getElementById("skill-form") as HTMLFormElement;
+  const itemsWrap = document.getElementById("skill-items") as HTMLElement;
+  const addButton = document.getElementById("skill-item-add") as HTMLButtonElement;
+  const status = document.getElementById("skill-status") as HTMLElement;
+
+  const itemInputClass =
+    "w-full rounded-sm border border-line bg-surface px-3.5 py-2.5 text-[14.5px] text-ink outline-none transition-colors duration-200 focus:border-accent";
+
+  function addItemRow(value = "") {
+    const row = document.createElement("div");
+    row.className = "flex gap-2";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = value;
+    input.className = itemInputClass;
+    input.placeholder = "One number, one definition";
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "×";
+    remove.setAttribute("aria-label", "Remove item");
+    remove.className =
+      "shrink-0 rounded-sm border border-line px-3 text-lg text-muted transition-colors duration-200 hover:border-accent hover:text-accent";
+    remove.addEventListener("click", () => row.remove());
+
+    row.append(input, remove);
+    itemsWrap.append(row);
+  }
+
+  addButton.addEventListener("click", () => addItemRow());
+  addItemRow(); // start with one empty row so the form isn't blank
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const title = String(data.get("title") ?? "").trim();
+
+    const items = Array.from(itemsWrap.querySelectorAll<HTMLInputElement>("input"))
+      .map((el) => el.value.trim())
+      .filter(Boolean);
+
+    const payload: Record<string, unknown> = {
+      title,
+      sub: String(data.get("sub") ?? "").trim(),
+      // Always send items as an array, even empty — the backend 500s if the
+      // field is omitted entirely (a nil-slice bug on its end).
+      items,
+    };
+
+    try {
+      await adminRequest("/admin/skills", "POST", payload);
+      showStatus(status, "ok", `Added "${title}".`);
+      form.reset();
+      itemsWrap.innerHTML = "";
+      addItemRow();
+    } catch (error) {
+      showStatus(status, "error", error instanceof Error ? error.message : "Something went wrong.");
+    }
+  });
+</script>

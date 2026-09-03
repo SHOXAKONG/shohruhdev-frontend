@@ -1,0 +1,74 @@
+---
+import Logo from "../components/Logo.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import { site } from "../data/site";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+}
+
+const { title = `Admin — ${site.name}` } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <title>{title}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta name="theme-color" content="#faf8f4" />
+
+    <script is:inline>
+      // Same pre-paint theme script as BaseLayout — kept in sync manually since
+      // the admin panel doesn't share BaseLayout (no public nav/footer here).
+      (() => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem("theme");
+        } catch {
+          // storage blocked — fall through to the OS setting
+        }
+
+        const dark =
+          saved === "dark" ||
+          (saved !== "light" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      })();
+    </script>
+  </head>
+  <body class="bg-paper text-ink">
+    <header class="border-b border-line">
+      <div class="wrap flex h-16 items-center justify-between">
+        <div class="flex items-center gap-3">
+          <Logo href="/admin" />
+          <span class="font-mono text-[11px] tracking-[0.16em] text-muted uppercase">
+            Admin
+          </span>
+        </div>
+        <div class="flex items-center gap-4">
+          <a class="text-[13.5px] text-body transition-colors duration-200 hover:text-accent" href="/">
+            ← Back to site
+          </a>
+          <ThemeToggle />
+        </div>
+      </div>
+    </header>
+    <main class="wrap py-12">
+      <slot />
+    </main>
+  </body>
+</html>

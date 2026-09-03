@@ -151,6 +151,17 @@ const toc = headings.filter((heading) => heading.depth === 2);
     margin-bottom: 20px;
   }
 
+  /* classic print drop cap on the article's opening paragraph */
+  .prose :global(p:first-of-type::first-letter) {
+    float: left;
+    margin: 0.03em 0.09em 0 0;
+    font-family: var(--font-serif);
+    font-size: 3.4em;
+    font-weight: 600;
+    line-height: 0.85;
+    color: var(--accent);
+  }
+
   .prose :global(strong) {
     color: var(--ink);
   }

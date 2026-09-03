@@ -1,0 +1,121 @@
+---
+const input =
+  "w-full rounded-sm border border-line bg-surface px-3.5 py-2.5 text-[14.5px] text-ink outline-none transition-colors duration-200 focus:border-accent";
+const label = "mb-1.5 block font-mono text-[10.5px] tracking-[0.14em] text-muted uppercase";
+---
+
+<form id="project-form" class="max-w-[640px]">
+  <div class="mb-5 grid grid-cols-2 gap-4 max-[560px]:grid-cols-1">
+    <div>
+      <label class={label} for="project-title">Title</label>
+      <input id="project-title" name="title" type="text" required class={input} />
+    </div>
+    <div>
+      <label class={label} for="project-slug">Slug</label>
+      <input id="project-slug" name="slug" type="text" required class={`${input} font-mono`} />
+    </div>
+  </div>
+
+  <div class="mb-5 grid grid-cols-2 gap-4 max-[560px]:grid-cols-1">
+    <div>
+      <label class={label} for="project-category">Category</label>
+      <input
+        id="project-category"
+        name="category"
+        type="text"
+        required
+        placeholder="SELF-SERVICE ANSWERS"
+        class={input}
+      />
+    </div>
+    <div>
+      <label class={label} for="project-tone">Tone</label>
+      <select id="project-tone" name="tone" required class={input}>
+        <option>violet</option>
+        <option>coral</option>
+        <option>mint</option>
+        <option>sky</option>
+        <option>amber</option>
+        <option>aqua</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-5">
+    <label class={label} for="project-problem">Problem</label>
+    <textarea id="project-problem" name="problem" rows="3" required class={`${input} resize-y`}></textarea>
+  </div>
+
+  <div class="mb-5">
+    <label class={label} for="project-approach">Approach</label>
+    <textarea id="project-approach" name="approach" rows="3" required class={`${input} resize-y`}></textarea>
+  </div>
+
+  <div class="mb-5">
+    <label class={label} for="project-result">Result</label>
+    <textarea id="project-result" name="result" rows="3" required class={`${input} resize-y`}></textarea>
+  </div>
+
+  <div class="mb-6 grid grid-cols-2 gap-4 max-[560px]:grid-cols-1">
+    <div>
+      <label class={label} for="project-outcome">Outcome <span class="normal-case text-muted">(2–4 words)</span></label>
+      <input id="project-outcome" name="outcome" type="text" required class={input} />
+    </div>
+    <div>
+      <label class={label} for="project-href">Link <span class="normal-case text-muted">(optional)</span></label>
+      <input id="project-href" name="href" type="url" class={input} />
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    class="rounded-sm bg-accent px-6 py-3 text-[14.5px] font-semibold text-paper transition-colors duration-200 hover:bg-accent-strong"
+  >
+    Add project
+  </button>
+  <p id="project-status" hidden></p>
+</form>
+
+<script>
+  import { adminRequest, showStatus, slugify } from "../../scripts/admin-api";
+
+  const form = document.getElementById("project-form") as HTMLFormElement;
+  const titleInput = document.getElementById("project-title") as HTMLInputElement;
+  const slugInput = document.getElementById("project-slug") as HTMLInputElement;
+  const status = document.getElementById("project-status") as HTMLElement;
+
+  let slugTouched = false;
+  slugInput.addEventListener("input", () => {
+    slugTouched = true;
+  });
+  titleInput.addEventListener("input", () => {
+    if (!slugTouched) slugInput.value = slugify(titleInput.value);
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const title = String(data.get("title") ?? "").trim();
+
+    const payload = {
+      title,
+      slug: String(data.get("slug") ?? "").trim(),
+      category: String(data.get("category") ?? "").trim(),
+      tone: String(data.get("tone") ?? ""),
+      problem: String(data.get("problem") ?? "").trim(),
+      approach: String(data.get("approach") ?? "").trim(),
+      result: String(data.get("result") ?? "").trim(),
+      outcome: String(data.get("outcome") ?? "").trim(),
+      href: String(data.get("href") ?? "").trim() || null,
+    };
+
+    try {
+      await adminRequest("/admin/projects", "POST", payload);
+      showStatus(status, "ok", `Added "${title}".`);
+      form.reset();
+      slugTouched = false;
+    } catch (error) {
+      showStatus(status, "error", error instanceof Error ? error.message : "Something went wrong.");
+    }
+  });
+</script>
