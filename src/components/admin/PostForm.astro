@@ -1,0 +1,173 @@
+---
+const input =
+  "w-full rounded-sm border border-line bg-surface px-3.5 py-2.5 text-[14.5px] text-ink outline-none transition-colors duration-200 focus:border-accent";
+const label = "mb-1.5 block font-mono text-[10.5px] tracking-[0.14em] text-muted uppercase";
+---
+
+<form id="post-form" class="max-w-[640px]">
+  <div class="mb-5 grid grid-cols-2 gap-4 max-[560px]:grid-cols-1">
+    <div>
+      <label class={label} for="post-title">Title</label>
+      <input id="post-title" name="title" type="text" required class={input} />
+    </div>
+    <div>
+      <label class={label} for="post-slug">Slug</label>
+      <input id="post-slug" name="slug" type="text" required class={`${input} font-mono`} />
+    </div>
+  </div>
+
+  <div class="mb-5">
+    <label class={label} for="post-description">Description</label>
+    <textarea id="post-description" name="description" rows="2" required class={`${input} resize-y`}
+    ></textarea>
+  </div>
+
+  <div class="mb-5">
+    <label class={label} for="post-dek">Dek <span class="normal-case text-muted">(optional)</span></label>
+    <textarea id="post-dek" name="dek" rows="2" class={`${input} resize-y`}></textarea>
+  </div>
+
+  <div class="mb-5 grid grid-cols-3 gap-4 max-[560px]:grid-cols-1">
+    <div>
+      <label class={label} for="post-tag">Tag</label>
+      <input id="post-tag" name="tag" type="text" required placeholder="MCP" class={input} />
+    </div>
+    <div>
+      <label class={label} for="post-category">Category</label>
+      <select id="post-category" name="category" required class={input}>
+        <option>Data</option>
+        <option>Backend</option>
+        <option>Postgres</option>
+        <option>Go</option>
+        <option>Java</option>
+      </select>
+    </div>
+    <div>
+      <label class={label} for="post-tone">Tone</label>
+      <select id="post-tone" name="tone" required class={input}>
+        <option>violet</option>
+        <option>coral</option>
+        <option>mint</option>
+        <option>sky</option>
+        <option>amber</option>
+        <option>aqua</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-5 grid grid-cols-3 gap-4 max-[560px]:grid-cols-1">
+    <div>
+      <label class={label} for="post-pubdate">Publish date</label>
+      <input id="post-pubdate" name="pubDate" type="date" required class={input} />
+    </div>
+    <div>
+      <label class={label} for="post-reading-time">
+        Reading time <span class="normal-case text-muted">(min, optional)</span>
+      </label>
+      <input id="post-reading-time" name="readingTime" type="number" min="1" class={input} />
+    </div>
+    <div class="flex items-end pb-2.5">
+      <label class="flex items-center gap-2 text-[14px] text-ink">
+        <input id="post-featured" name="featured" type="checkbox" class="size-4 accent-[color:var(--color-accent)]" />
+        Featured
+      </label>
+    </div>
+  </div>
+
+  <div id="post-featured-line-wrap" hidden class="mb-5">
+    <label class={label} for="post-featured-line">Featured line</label>
+    <input id="post-featured-line" name="featuredLine" type="text" class={input} />
+  </div>
+
+  <div class="mb-5">
+    <label class={label} for="post-hero-caption">Hero caption <span class="normal-case text-muted">(optional)</span></label>
+    <input id="post-hero-caption" name="heroCaption" type="text" class={`${input} font-mono text-[13px]`} />
+  </div>
+
+  <div class="mb-6">
+    <label class={label} for="post-body">Body <span class="normal-case text-muted">(markdown, optional)</span></label>
+    <textarea
+      id="post-body"
+      name="body"
+      rows="12"
+      class={`${input} resize-y font-mono text-[13px] leading-relaxed`}
+    ></textarea>
+  </div>
+
+  <button
+    type="submit"
+    class="rounded-sm bg-accent px-6 py-3 text-[14.5px] font-semibold text-paper transition-colors duration-200 hover:bg-accent-strong"
+  >
+    Publish post
+  </button>
+  <p id="post-status" hidden></p>
+</form>
+
+<script>
+  import { adminRequest, showStatus, slugify } from "../../scripts/admin-api";
+
+  const form = document.getElementById("post-form") as HTMLFormElement;
+  const titleInput = document.getElementById("post-title") as HTMLInputElement;
+  const slugInput = document.getElementById("post-slug") as HTMLInputElement;
+  const featuredInput = document.getElementById("post-featured") as HTMLInputElement;
+  const featuredLineWrap = document.getElementById("post-featured-line-wrap") as HTMLElement;
+  const status = document.getElementById("post-status") as HTMLElement;
+
+  let slugTouched = false;
+  slugInput.addEventListener("input", () => {
+    slugTouched = true;
+  });
+  titleInput.addEventListener("input", () => {
+    if (!slugTouched) slugInput.value = slugify(titleInput.value);
+  });
+
+  featuredInput.addEventListener("change", () => {
+    featuredLineWrap.hidden = !featuredInput.checked;
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const title = String(data.get("title") ?? "").trim();
+
+    // Required fields per FRONTEND.md's Blog Posts "Create body".
+    const payload: Record<string, unknown> = {
+      title,
+      slug: String(data.get("slug") ?? "").trim(),
+      description: String(data.get("description") ?? "").trim(),
+      pubDate: String(data.get("pubDate") ?? ""),
+      tag: String(data.get("tag") ?? "").trim(),
+      category: String(data.get("category") ?? ""),
+      tone: String(data.get("tone") ?? ""),
+    };
+
+    // Everything else is optional — only send what was actually filled in.
+    const dek = String(data.get("dek") ?? "").trim();
+    if (dek) payload.dek = dek;
+
+    const readingTime = String(data.get("readingTime") ?? "").trim();
+    if (readingTime) payload.readingTime = Number(readingTime);
+
+    if (featuredInput.checked) {
+      payload.featured = true;
+      const featuredLine = String(data.get("featuredLine") ?? "").trim();
+      if (featuredLine) payload.featuredLine = featuredLine;
+    }
+
+    const heroCaption = String(data.get("heroCaption") ?? "").trim();
+    if (heroCaption) payload.heroCaption = heroCaption;
+
+    const body = String(data.get("body") ?? "").trim();
+    if (body) payload.body = body;
+
+    try {
+      await adminRequest("/admin/posts", "POST", payload);
+      showStatus(status, "ok", `Published "${title}".`);
+      form.reset();
+      featuredLineWrap.hidden = true;
+      slugTouched = false;
+    } catch (error) {
+      showStatus(status, "error", error instanceof Error ? error.message : "Something went wrong.");
+    }
+  });
+</script>
