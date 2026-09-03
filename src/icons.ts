@@ -4,22 +4,6 @@
  * Add a new entry here and it's available to <Icon name="…" />.
  */
 export const icons = {
-  database: `
-    <ellipse cx="12" cy="5.6" rx="7" ry="2.8"/>
-    <path d="M5 5.6v12c0 1.55 3.13 2.8 7 2.8s7-1.25 7-2.8V5.6"/>
-    <path d="M19 11.6c0 1.55-3.13 2.8-7 2.8s-7-1.25-7-2.8"/>
-  `,
-  server: `
-    <rect x="3.4" y="4" width="17.2" height="6.6" rx="2.1"/>
-    <rect x="3.4" y="13.4" width="17.2" height="6.6" rx="2.1"/>
-    <path d="M7 7.3h.01M7 16.7h.01"/>
-    <path d="M10.8 7.3h5.8M10.8 16.7h5.8"/>
-  `,
-  cube: `
-    <path d="M12 2.8 20.4 7v10L12 21.2 3.6 17V7z"/>
-    <path d="M3.6 7 12 11.2 20.4 7"/>
-    <path d="M12 11.2v10"/>
-  `,
   mail: `
     <rect x="2.9" y="4.9" width="18.2" height="14.2" rx="2.4"/>
     <path d="m3.8 7.3 7.2 5a1.9 1.9 0 0 0 2 0l7.2-5"/>
